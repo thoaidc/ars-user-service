@@ -48,14 +48,14 @@ public class Users extends AbstractAuditingEntity {
      * 3: Deleted
      */
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
-    private Byte status = BaseUserConstants.Status.ACTIVE;
+    private byte status;
 
     /**
      * 1 = admin <p>
      * 0 = user
      */
     @Column(name = "is_admin", nullable = false, columnDefinition = "TINYINT(1) DEFAULT FALSE")
-    private Boolean isAdmin = false;
+    private boolean isAdmin;
 
     @ManyToMany(
         cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH },
@@ -125,19 +125,19 @@ public class Users extends AbstractAuditingEntity {
         this.address = address;
     }
 
-    public Byte getStatus() {
+    public byte getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(byte status) {
         this.status = status;
     }
 
-    public Boolean getIsAdmin() {
+    public boolean getIsAdmin() {
         return isAdmin;
     }
 
-    public void setIsAdmin(Boolean isAdmin) {
+    public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
 
@@ -158,8 +158,8 @@ public class Users extends AbstractAuditingEntity {
         private String email;
         private String phone;
         private String address;
-        private Byte status = BaseUserConstants.Status.ACTIVE;
-        private Boolean isAdmin = false;
+        private byte status = BaseUserConstants.Status.ACTIVE;
+        private boolean isAdmin = false;
         private Set<Roles> roles = new LinkedHashSet<>();
 
         public Builder username(String username) {
@@ -197,12 +197,12 @@ public class Users extends AbstractAuditingEntity {
             return this;
         }
 
-        public Builder status(Byte status) {
+        public Builder status(byte status) {
             this.status = status;
             return this;
         }
 
-        public Builder isAdmin(Boolean isAdmin) {
+        public Builder isAdmin(boolean isAdmin) {
             this.isAdmin = isAdmin;
             return this;
         }

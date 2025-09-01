@@ -91,6 +91,20 @@ server:
         http-only: true
   port: 8000
 
+# Eureka client configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    healthcheck:
+      enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+    instanceId: ${spring.application.name}:${server.port}
+
 app:
   datasource: enabled
   jpa-auditing: enabled
