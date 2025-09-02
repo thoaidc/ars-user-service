@@ -50,14 +50,14 @@ public class Users extends AbstractAuditingEntity {
      * 3: Deleted
      */
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
-    private byte status;
+    private byte status = BaseUserConstants.Status.ACTIVE;
 
     /**
      * 1 = admin <p>
      * 0 = user
      */
     @Column(name = "is_admin", nullable = false, columnDefinition = "TINYINT(1) DEFAULT FALSE")
-    private boolean isAdmin;
+    private boolean isAdmin = false;
 
     @ManyToMany(
         cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH },
