@@ -2,6 +2,7 @@ package com.ars.userservice.repository;
 
 import com.ars.userservice.dto.mapping.IAuthenticationDTO;
 import com.ars.userservice.entity.Users;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,5 +20,5 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
         nativeQuery = true
     )
     Optional<IAuthenticationDTO> findAuthenticationByUsername(String username);
-    boolean existsByUsername(String username);
+    boolean existsByUsernameOrEmail(String username, String email);
 }

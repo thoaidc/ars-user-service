@@ -1,5 +1,8 @@
 package com.ars.userservice.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.servlet.http.Cookie;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +15,8 @@ public class AuthenticationResponseDTO {
     private Boolean isAdmin;
     private String status;
     private String accessToken;
-    private String refreshToken;
+    @JsonIgnore
+    private Cookie cookie;
     private Set<String> authorities = new HashSet<>();
 
     public String getFullname() {
@@ -63,12 +67,12 @@ public class AuthenticationResponseDTO {
         this.accessToken = accessToken;
     }
 
-    public String getRefreshToken() {
-        return refreshToken;
+    public Cookie getCookie() {
+        return cookie;
     }
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public void setCookie(Cookie cookie) {
+        this.cookie = cookie;
     }
 
     public Boolean getAdmin() {

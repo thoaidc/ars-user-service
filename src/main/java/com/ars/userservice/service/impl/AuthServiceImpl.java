@@ -12,6 +12,8 @@ import com.ars.userservice.security.UserDetailsCustom;
 import com.ars.userservice.service.AuthService;
 
 import com.dct.config.security.filter.BaseJwtProvider;
+import com.dct.model.config.properties.SecurityProps;
+import com.dct.model.constants.ActivateStatus;
 import com.dct.model.constants.BaseExceptionConstants;
 import com.dct.model.constants.BaseHttpStatusConstants;
 import com.dct.model.constants.BaseSecurityConstants;
@@ -22,7 +24,9 @@ import com.dct.model.exception.BaseAuthenticationException;
 import com.dct.model.exception.BaseBadRequestException;
 import com.dct.model.exception.BaseIllegalArgumentException;
 
-import jakarta.transaction.Transactional;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +44,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
@@ -53,17 +58,19 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final SecurityProps securityProps;
 
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            BaseJwtProvider tokenProvider,
                            PasswordEncoder passwordEncoder,
                            UserRepository userRepository,
-                           RoleRepository roleRepository) {
+                           RoleRepository roleRepository, SecurityProps securityProps) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.securityProps = securityProps;
     }
 
     @Override
@@ -74,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
                 .code(BaseHttpStatusConstants.ACCEPTED)
                 .message(ResultConstants.REGISTER_SUCCESS)
                 .success(Boolean.TRUE)
-                .result(user)
+                .result(userRepository.save(user))
                 .build();
     }
 
@@ -122,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
         String jwtAccessToken = tokenProvider.generateAccessToken(authTokenDTO);
         String jwtRefreshToken = tokenProvider.generateRefreshToken(authTokenDTO);
         results.setAccessToken(jwtAccessToken);
-        results.setRefreshToken(jwtRefreshToken);
+        results.setCookie(createSecureCookie(jwtRefreshToken, loginRequest.getRememberMe()));
 
         return BaseResponseDTO.builder()
                 .code(BaseHttpStatusConstants.ACCEPTED)
@@ -133,12 +140,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public BaseResponseDTO refreshToken(HttpServletRequest request) {
+        return null;
+    }
+
+    @Override
     public BaseResponseDTO logout() {
         return null;
     }
 
     private Users createUser(RegisterRequestDTO requestDTO) {
-        if (userRepository.existsByUsername(requestDTO.getUsername())) {
+        if (userRepository.existsByUsernameOrEmail(requestDTO.getUsername(), requestDTO.getEmail())) {
             throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_EXISTED);
         }
 
@@ -179,5 +191,17 @@ public class AuthServiceImpl implements AuthService {
             log.error("[AUTHENTICATE_ERROR] [{}] Authentication failed: {}", e.getClass().getSimpleName(), e.getMessage());
             throw new BaseAuthenticationException(ENTITY_NAME, BaseExceptionConstants.UNAUTHORIZED);
         }
+    }
+
+    private Cookie createSecureCookie(String refreshToken, boolean isRememberMe) {
+        Cookie cookie = new Cookie(BaseSecurityConstants.COOKIES.HTTP_ONLY_TOKEN, refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(ActivateStatus.ENABLED.equals(securityProps.getEnabledTls()));
+        cookie.setPath("/api/v1/users/refresh-token");
+        long refreshTokenValidity = securityProps.getJwt().getRefreshToken().getValidity();
+        long refreshTokenValidityForRemember = securityProps.getJwt().getRefreshToken().getValidityForRemember();
+        long expiredTimeMillis = isRememberMe ? refreshTokenValidityForRemember : refreshTokenValidity;
+        cookie.setMaxAge((int) (expiredTimeMillis / 1000L));
+        return cookie;
     }
 }

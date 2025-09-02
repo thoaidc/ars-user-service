@@ -1,8 +1,9 @@
 package com.ars.userservice.entity;
 
 import com.dct.config.entity.AbstractAuditingEntity;
-
 import com.dct.model.constants.BaseUserConstants;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +24,7 @@ public class Users extends AbstractAuditingEntity {
     @Column(name = "username", nullable = false, length = 50, unique = true)
     private String username;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 

@@ -1,6 +1,8 @@
 package com.ars.userservice.entity;
 
 import com.dct.config.entity.AbstractAuditingEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,6 +38,7 @@ public class Roles extends AbstractAuditingEntity {
         joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id")
     )
+    @JsonIgnore
     private Set<Authority> authorities = new LinkedHashSet<>();
 
     // ===== GETTER/SETTER =====
