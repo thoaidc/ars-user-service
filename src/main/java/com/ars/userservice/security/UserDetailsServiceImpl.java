@@ -37,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Load user by username: {}", username);
-        Optional<IAuthenticationDTO> authentication = userRepository.findAuthenticationByUsername(username);
+        Optional<IAuthenticationDTO> authentication = userRepository.findAuthenticationByUsernameOrEmail(username);
 
         if (authentication.isEmpty()) {
             throw new UsernameNotFoundException(BaseExceptionConstants.ACCOUNT_NOT_FOUND);

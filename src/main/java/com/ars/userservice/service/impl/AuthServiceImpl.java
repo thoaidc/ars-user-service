@@ -119,6 +119,7 @@ public class AuthServiceImpl implements AuthService {
         Users user = userDetails.getUser();
         BeanUtils.copyProperties(user, results);
         results.setAuthorities(userDetails.getUserAuthorities());
+        results.setStatus(BaseUserConstants.Status.toString(user.getStatus()));
         BaseTokenDTO authTokenDTO = BaseTokenDTO.builder()
                 .authentication(authentication)
                 .userId(user.getId())
