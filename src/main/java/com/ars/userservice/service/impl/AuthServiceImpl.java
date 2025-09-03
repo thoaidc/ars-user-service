@@ -204,6 +204,8 @@ public class AuthServiceImpl implements AuthService {
         cookie.setHttpOnly(true);
         cookie.setSecure(ActivateStatus.ENABLED.equals(securityProps.getEnabledTls()));
         cookie.setPath("/api/p/v1/users/refresh-token");
+        cookie.setAttribute("SameSite", "Strict");
+        // cookie.domain("frontend.com");
         long refreshTokenValidity = securityProps.getJwt().getRefreshToken().getValidity();
         long refreshTokenValidityForRemember = securityProps.getJwt().getRefreshToken().getValidityForRemember();
         long expiredTimeMillis = isRememberMe ? refreshTokenValidityForRemember : refreshTokenValidity;
