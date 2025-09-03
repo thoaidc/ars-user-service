@@ -1,8 +1,8 @@
 package com.ars.userservice.service.impl;
 
 import com.ars.userservice.constants.ResultConstants;
-import com.ars.userservice.dto.request.LoginRequestDTO;
-import com.ars.userservice.dto.request.RegisterRequestDTO;
+import com.ars.userservice.dto.request.user.LoginRequestDTO;
+import com.ars.userservice.dto.request.user.RegisterRequestDTO;
 import com.ars.userservice.dto.response.AuthenticationResponseDTO;
 import com.ars.userservice.entity.Roles;
 import com.ars.userservice.entity.Users;
