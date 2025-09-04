@@ -6,6 +6,7 @@ import com.dct.model.dto.response.BaseResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthService {
+    BaseResponseDTO checkAuthenticationStatus();
     BaseResponseDTO register(RegisterRequestDTO requestDTO, boolean isShop);
     BaseResponseDTO authenticate(LoginRequestDTO requestDTO);
     BaseResponseDTO refreshToken(HttpServletRequest request);

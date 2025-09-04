@@ -26,6 +26,11 @@ public class AuthResource {
         this.authService = authService;
     }
 
+    @PostMapping("/v1/users/status")
+    public BaseResponseDTO checkUserAuthenticationStatus() {
+        return authService.checkAuthenticationStatus();
+    }
+
     @PostMapping("/p/v1/users/register")
     public BaseResponseDTO register(@Valid @RequestBody RegisterRequestDTO requestDTO, @RequestParam boolean isShop) {
         return authService.register(requestDTO, isShop);

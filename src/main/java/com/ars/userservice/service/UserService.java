@@ -6,9 +6,13 @@ import com.ars.userservice.dto.request.user.ChangeUserStatusRequestDTO;
 import com.ars.userservice.dto.request.user.CreateUserRequestDTO;
 import com.ars.userservice.dto.request.user.RecoverPasswordRequestDTO;
 import com.ars.userservice.dto.request.user.UpdateUserRequestDTO;
+import com.ars.userservice.dto.response.UserDTO;
+import com.dct.model.dto.request.BaseRequestDTO;
 import com.dct.model.dto.response.BaseResponseDTO;
 
 public interface UserService {
+    BaseResponseDTO getUsersWithPaging(BaseRequestDTO request);
+    BaseResponseDTO getUserDetail(Integer userId);
     BaseResponseDTO createUser(CreateUserRequestDTO requestDTO);
     BaseResponseDTO updateUser(UpdateUserRequestDTO requestDTO);
     BaseResponseDTO deleteUser(Integer userId);

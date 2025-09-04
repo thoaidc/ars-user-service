@@ -1,11 +1,13 @@
 package com.ars.userservice.service.impl;
 
 import com.ars.userservice.constants.ResultConstants;
+import com.ars.userservice.dto.mapping.IAuthenticationDTO;
 import com.ars.userservice.dto.request.user.LoginRequestDTO;
 import com.ars.userservice.dto.request.user.RegisterRequestDTO;
 import com.ars.userservice.dto.response.AuthenticationResponseDTO;
 import com.ars.userservice.entity.Roles;
 import com.ars.userservice.entity.Users;
+import com.ars.userservice.repository.AuthorityRepository;
 import com.ars.userservice.repository.RoleRepository;
 import com.ars.userservice.repository.UserRepository;
 import com.ars.userservice.security.UserDetailsCustom;
@@ -62,19 +64,44 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final AuthorityRepository authorityRepository;
     private final SecurityProps securityProps;
 
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            BaseJwtProvider tokenProvider,
                            PasswordEncoder passwordEncoder,
                            UserRepository userRepository,
-                           RoleRepository roleRepository, SecurityProps securityProps) {
+                           RoleRepository roleRepository,
+                           AuthorityRepository authorityRepository,
+                           SecurityProps securityProps) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.authorityRepository = authorityRepository;
         this.securityProps = securityProps;
+    }
+
+    @Override
+    public BaseResponseDTO checkAuthenticationStatus() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (org.springframework.util.StringUtils.hasText(username)) {
+            Optional<IAuthenticationDTO> authentication = userRepository.findAuthenticationByUsernameOrEmail(username);
+
+            if (authentication.isEmpty()) {
+                throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_EXISTED);
+            }
+
+            AuthenticationResponseDTO authenticationDTO = new AuthenticationResponseDTO();
+            BeanUtils.copyProperties(authentication.get(), authenticationDTO);
+            Set<String> authorities = authorityRepository.findAllByUserId(authenticationDTO.getId());
+            authenticationDTO.setAuthorities(authorities);
+            return BaseResponseDTO.builder().ok(authenticationDTO);
+        }
+
+        throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.BAD_CREDENTIALS);
     }
 
     @Override

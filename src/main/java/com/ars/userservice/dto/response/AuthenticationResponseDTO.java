@@ -112,14 +112,6 @@ public class AuthenticationResponseDTO {
         this.id = id;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
     public String getCreatedBy() {
         return createdBy;
     }
