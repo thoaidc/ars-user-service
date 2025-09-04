@@ -1,4 +1,4 @@
-package com.ars.userservice.dto.request;
+package com.ars.userservice.dto.request.user;
 
 import com.dct.model.constants.BaseExceptionConstants;
 

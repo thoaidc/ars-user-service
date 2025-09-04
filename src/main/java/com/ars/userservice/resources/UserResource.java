@@ -1,10 +1,10 @@
 package com.ars.userservice.resources;
 
-import com.ars.userservice.dto.request.ChangeEmailRequestDTO;
-import com.ars.userservice.dto.request.ChangePasswordRequestDTO;
-import com.ars.userservice.dto.request.CreateUserRequestDTO;
-import com.ars.userservice.dto.request.RecoverPasswordRequestDTO;
-import com.ars.userservice.dto.request.UpdateUserRequestDTO;
+import com.ars.userservice.dto.request.user.ChangeEmailRequestDTO;
+import com.ars.userservice.dto.request.user.ChangePasswordRequestDTO;
+import com.ars.userservice.dto.request.user.CreateUserRequestDTO;
+import com.ars.userservice.dto.request.user.RecoverPasswordRequestDTO;
+import com.ars.userservice.dto.request.user.UpdateUserRequestDTO;
 import com.ars.userservice.service.UserService;
 import com.dct.model.dto.response.BaseResponseDTO;
 
@@ -29,6 +29,11 @@ public class UserResource {
     @PostMapping
     public BaseResponseDTO createUser(@Valid @RequestBody CreateUserRequestDTO requestDTO) {
         return userService.createUser(requestDTO);
+    }
+
+    @PostMapping("/status")
+    public BaseResponseDTO checkUserAuthenticationStatus() {
+        return BaseResponseDTO.builder().ok();
     }
 
     @PutMapping

@@ -83,7 +83,7 @@ public class RoleAuthority extends AbstractAuditingEntity {
             return this;
         }
 
-        public Builder authority(Integer authorityId) {
+        public Builder authorityId(Integer authorityId) {
             this.authorityId = authorityId;
             return this;
         }

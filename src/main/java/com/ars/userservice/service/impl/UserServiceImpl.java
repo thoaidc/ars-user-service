@@ -1,11 +1,11 @@
 package com.ars.userservice.service.impl;
 
-import com.ars.userservice.dto.request.ChangeEmailRequestDTO;
-import com.ars.userservice.dto.request.ChangePasswordRequestDTO;
-import com.ars.userservice.dto.request.ChangeUserStatusRequestDTO;
-import com.ars.userservice.dto.request.CreateUserRequestDTO;
-import com.ars.userservice.dto.request.RecoverPasswordRequestDTO;
-import com.ars.userservice.dto.request.UpdateUserRequestDTO;
+import com.ars.userservice.dto.request.user.ChangeEmailRequestDTO;
+import com.ars.userservice.dto.request.user.ChangePasswordRequestDTO;
+import com.ars.userservice.dto.request.user.ChangeUserStatusRequestDTO;
+import com.ars.userservice.dto.request.user.CreateUserRequestDTO;
+import com.ars.userservice.dto.request.user.RecoverPasswordRequestDTO;
+import com.ars.userservice.dto.request.user.UpdateUserRequestDTO;
 import com.ars.userservice.service.UserService;
 import com.dct.model.dto.response.BaseResponseDTO;
 import org.springframework.stereotype.Service;

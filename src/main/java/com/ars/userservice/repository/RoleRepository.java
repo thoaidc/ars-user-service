@@ -23,7 +23,7 @@ public interface RoleRepository extends JpaRepository<Roles, Integer> {
         """,
         nativeQuery = true
     )
-    List<IRoleDTO> findAllByUserId(Long userId);
+    List<IRoleDTO> findAllByUserId(Integer userId);
 
     @Query(
         value = """
@@ -35,12 +35,14 @@ public interface RoleRepository extends JpaRepository<Roles, Integer> {
     Page<IRoleDTO> findAllWithPaging(@Param("keyword") String keyword, Pageable pageable);
 
     @Query(value = "SELECT r.id, r.name, r.code FROM ars_user.roles r WHERE r.id IN (?1)", nativeQuery = true)
-    List<IRoleDTO> findAllByIds(Iterable<Long> roleIds);
+    List<IRoleDTO> findAllByIds(Iterable<Integer> roleIds);
 
     @Query(value = "SELECT r.id, r.name, r.code FROM ars_user.roles r WHERE r.id = ?1", nativeQuery = true)
-    Optional<IRoleDTO> findIRoleById(Long roleId);
+    Optional<IRoleDTO> findIRoleById(Integer roleId);
 
     Optional<Roles> findRoleByCode(String code);
     boolean existsByCodeOrName(String code, String name);
+
+    @Query(value = "SELECT (COUNT(*) > 0) FROM Roles r WHERE (r.code = ?1 OR r.name = ?2) AND r.id <> ?3")
     boolean existsByCodeOrNameAndIdNot(String code, String name, Integer id);
 }

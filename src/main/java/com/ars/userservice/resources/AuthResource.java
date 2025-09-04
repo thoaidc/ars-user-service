@@ -1,7 +1,7 @@
 package com.ars.userservice.resources;
 
-import com.ars.userservice.dto.request.LoginRequestDTO;
-import com.ars.userservice.dto.request.RegisterRequestDTO;
+import com.ars.userservice.dto.request.user.LoginRequestDTO;
+import com.ars.userservice.dto.request.user.RegisterRequestDTO;
 import com.ars.userservice.dto.response.AuthenticationResponseDTO;
 import com.ars.userservice.service.AuthService;
 import com.dct.model.dto.response.BaseResponseDTO;

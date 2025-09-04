@@ -11,7 +11,7 @@ import java.util.Set;
 
 @SuppressWarnings("unused")
 public class AuthenticationResponseDTO {
-    private Integer userId;
+    private Integer id;
     private String fullname;
     private String email;
     private String phone;
@@ -104,12 +104,20 @@ public class AuthenticationResponseDTO {
         this.isAdmin = isAdmin;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public String getCreatedBy() {

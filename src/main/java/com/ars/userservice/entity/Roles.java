@@ -12,8 +12,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "roles")
@@ -27,6 +27,7 @@ public class Roles extends AbstractAuditingEntity {
     private String code;
 
     @Column(name = "normalized_name", nullable = false, length = 50)
+    @JsonIgnore
     private String normalizedName;
 
     @ManyToMany(
@@ -39,7 +40,7 @@ public class Roles extends AbstractAuditingEntity {
         inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id")
     )
     @JsonIgnore
-    private Set<Authority> authorities = new LinkedHashSet<>();
+    private List<Authority> authorities = new ArrayList<>();
 
     // ===== GETTER/SETTER =====
     public String getName() {
@@ -66,11 +67,11 @@ public class Roles extends AbstractAuditingEntity {
         this.normalizedName = normalizedName;
     }
 
-    public Set<Authority> getAuthorities() {
+    public List<Authority> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
+    public void setAuthorities(List<Authority> authorities) {
         this.authorities = authorities;
     }
 
@@ -79,7 +80,7 @@ public class Roles extends AbstractAuditingEntity {
         private String name;
         private String code;
         private String normalizedName;
-        private Set<Authority> authorities;
+        private List<Authority> authorities;
 
         public Builder name(String name) {
             this.name = name;
@@ -96,7 +97,7 @@ public class Roles extends AbstractAuditingEntity {
             return this;
         }
 
-        public Builder authorities(Set<Authority> authorities) {
+        public Builder authorities(List<Authority> authorities) {
             this.authorities = authorities;
             return this;
         }
