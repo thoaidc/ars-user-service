@@ -141,10 +141,7 @@ public class RoleServiceImpl implements RoleService {
         authorityDTOS.forEach(authority -> {
             RoleAuthority roleAuthority = RoleAuthority.builder()
                     .roleId(role.getId())
-                    .roleCode(role.getCode())
                     .authorityId(authority.getId())
-                    .authorityCode(authority.getCode())
-                    .authorityParentCode(authority.getParentCode())
                     .build();
             roleAuthorities.add(roleAuthority);
         });
@@ -176,6 +173,7 @@ public class RoleServiceImpl implements RoleService {
 
         role.setName(request.getName());
         role.setCode(request.getCode());
+        role.setAuthorities(authoritiesForUpdate);
         roleRepository.save(role);
         return BaseResponseDTO.builder().ok(role);
     }
