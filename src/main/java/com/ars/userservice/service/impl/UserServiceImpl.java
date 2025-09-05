@@ -1,5 +1,6 @@
 package com.ars.userservice.service.impl;
 
+import com.ars.userservice.dto.mapping.IRoleDTO;
 import com.ars.userservice.dto.mapping.IUserDTO;
 import com.ars.userservice.dto.request.user.ChangeEmailRequestDTO;
 import com.ars.userservice.dto.request.user.ChangePasswordRequestDTO;
@@ -8,6 +9,8 @@ import com.ars.userservice.dto.request.user.CreateUserRequestDTO;
 import com.ars.userservice.dto.request.user.RecoverPasswordRequestDTO;
 import com.ars.userservice.dto.request.user.UpdateUserRequestDTO;
 import com.ars.userservice.dto.response.UserDTO;
+import com.ars.userservice.entity.Roles;
+import com.ars.userservice.entity.UserRole;
 import com.ars.userservice.entity.Users;
 import com.ars.userservice.repository.RoleRepository;
 import com.ars.userservice.repository.UserRepository;
@@ -29,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -83,19 +87,68 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public BaseResponseDTO createUser(CreateUserRequestDTO requestDTO) {
-        return null;
+        if (userRepository.existsByUsernameOrEmail(requestDTO.getUsername(), requestDTO.getEmail())) {
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_EXISTED);
+        }
+
+        List<IRoleDTO> roles = roleRepository.findAllByIds(requestDTO.getRoleIds());
+
+        if (roles.isEmpty() || roles.size() != requestDTO.getRoleIds().size()) {
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ROLE_AUTHORITY_INVALID);
+        }
+
+        Users user = new Users();
+        BeanUtils.copyProperties(requestDTO, user);
+        user.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+        user.setStatus(BaseUserConstants.Status.ACTIVE);
+        userRepository.save(user);
+        int userId = user.getId();
+        List<UserRole> userRoles = roles.stream().map(role -> new UserRole(userId, role.getId())).toList();
+        userRoleRepository.saveAll(userRoles);
+        return BaseResponseDTO.builder().ok(user);
     }
 
     @Override
     @Transactional
     public BaseResponseDTO updateUser(UpdateUserRequestDTO requestDTO) {
-        return null;
+        boolean isUserExisted = userRepository.existsByUsernameOrEmailAndIdNot(
+            requestDTO.getUsername(),
+            requestDTO.getEmail(),
+            requestDTO.getId()
+        );
+
+        if (isUserExisted) {
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_EXISTED);
+        }
+
+        Optional<Users> userOptional = userRepository.findById(requestDTO.getId());
+
+        if (userOptional.isEmpty()) {
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_EXISTED);
+        }
+
+        List<Roles> userRolesForUpdate = roleRepository.findAllById(requestDTO.getRoleIds());
+
+        if (userRolesForUpdate.isEmpty() || userRolesForUpdate.size() != requestDTO.getRoleIds().size()) {
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ROLE_AUTHORITY_INVALID);
+        }
+
+        Users user = userOptional.get();
+        BeanUtils.copyProperties(requestDTO, user);
+        user.setRoles(userRolesForUpdate);
+        userRepository.save(user);
+        return BaseResponseDTO.builder().ok(user);
     }
 
     @Override
     @Transactional
     public BaseResponseDTO deleteUser(Integer userId) {
-        return null;
+        if (Objects.isNull(userId) || userId <= 0) {
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.INVALID_REQUEST_DATA);
+        }
+
+        userRepository.updateUserStatusById(userId, BaseUserConstants.Status.DELETED);
+        return BaseResponseDTO.builder().ok();
     }
 
     @Override
@@ -107,13 +160,35 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public BaseResponseDTO changeStatus(ChangeUserStatusRequestDTO requestDTO) {
-        return null;
+        userRepository.updateUserStatusById(requestDTO.getId(), requestDTO.getStatus());
+        return BaseResponseDTO.builder().ok();
     }
 
     @Override
     @Transactional
     public BaseResponseDTO changePassword(ChangePasswordRequestDTO requestDTO) {
-        return null;
+        Optional<Users> userOptional = userRepository.findById(requestDTO.getId());
+
+        if (userOptional.isEmpty()) {
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_EXISTED);
+        }
+
+        Users user = userOptional.get();
+        String oldPassword = user.getPassword();
+        String oldPasswordConfirm = requestDTO.getOldPassword();
+        String newPassword = requestDTO.getNewPassword();
+
+        if (!passwordEncoder.matches(oldPasswordConfirm, oldPassword)) {
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.OLD_PASSWORD_INVALID);
+        }
+
+        if (Objects.equals(oldPasswordConfirm, newPassword)) {
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.NEW_PASSWORD_DUPLICATED);
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return BaseResponseDTO.builder().ok();
     }
 
     @Override

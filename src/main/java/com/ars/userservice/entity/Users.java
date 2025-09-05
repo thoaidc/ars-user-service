@@ -2,8 +2,8 @@ package com.ars.userservice.entity;
 
 import com.dct.config.entity.AbstractAuditingEntity;
 import com.dct.model.constants.BaseUserConstants;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,8 +13,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -68,7 +68,7 @@ public class Users extends AbstractAuditingEntity {
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
-    private Set<Roles> roles = new LinkedHashSet<>();
+    private List<Roles> roles = new ArrayList<>();
 
     // ===== GETTER/SETTER =====
     public String getUsername() {
@@ -143,11 +143,11 @@ public class Users extends AbstractAuditingEntity {
         this.isAdmin = isAdmin;
     }
 
-    public Set<Roles> getRoles() {
+    public List<Roles> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Roles> roles) {
+    public void setRoles(List<Roles> roles) {
         this.roles = roles;
     }
 
@@ -162,7 +162,7 @@ public class Users extends AbstractAuditingEntity {
         private String address;
         private byte status = BaseUserConstants.Status.ACTIVE;
         private boolean isAdmin = false;
-        private Set<Roles> roles = new LinkedHashSet<>();
+        private List<Roles> roles = new ArrayList<>();
 
         public Builder username(String username) {
             this.username = username;
@@ -209,7 +209,7 @@ public class Users extends AbstractAuditingEntity {
             return this;
         }
 
-        public Builder roles(Set<Roles> roles) {
+        public Builder roles(List<Roles> roles) {
             this.roles = roles;
             return this;
         }

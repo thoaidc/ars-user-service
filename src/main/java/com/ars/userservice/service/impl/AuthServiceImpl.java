@@ -51,6 +51,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -127,7 +128,7 @@ public class AuthServiceImpl implements AuthService {
                 throw new BaseIllegalArgumentException(ENTITY_NAME, BaseExceptionConstants.ROLE_NOT_FOUND);
             }
 
-            user.setRoles(Set.of(role.get()));
+            user.setRoles(List.of(role.get()));
             userRepository.save(user);
         }
 

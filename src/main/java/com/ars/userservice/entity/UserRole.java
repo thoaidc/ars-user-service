@@ -17,6 +17,13 @@ public class UserRole extends AbstractAuditingEntity {
     @Column(name = "role_id", nullable = false)
     private Integer roleId;
 
+    public UserRole() {}
+
+    public UserRole(Integer userId, Integer roleId) {
+        this.userId = userId;
+        this.roleId = roleId;
+    }
+
     // ===== GETTER/SETTER =====
     public Integer getUserId() {
         return userId;

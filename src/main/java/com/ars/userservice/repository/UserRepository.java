@@ -8,6 +8,7 @@ import com.dct.model.constants.BaseUserConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -63,4 +64,11 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
     )
     Optional<IAuthenticationDTO> findAuthenticationByUsernameOrEmail(String credential);
     boolean existsByUsernameOrEmail(String username, String email);
+
+    @Query(value = "SELECT (COUNT(*) > 0) FROM Users u WHERE (u.username = ?1 OR u.email = ?2) AND u.id <> ?3")
+    boolean existsByUsernameOrEmailAndIdNot(String username, String email, Integer id);
+
+    @Modifying
+    @Query(value = "UPDATE ars_user.users a SET a.status = ?2 WHERE a.id = ?1", nativeQuery = true)
+    void updateUserStatusById(Integer userId, byte status);
 }
