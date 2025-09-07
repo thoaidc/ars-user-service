@@ -107,6 +107,7 @@ eureka:
     instanceId: ${spring.application.name}:${server.port}
 
 app:
+  domain: http://localhost:8080 # API Gateway domain
   datasource: enabled
   jpa-auditing: enabled
 
@@ -116,7 +117,9 @@ app:
     authentication-type: jwt_verify
     public-request-patterns:
       - /api/p/**
+      - /login/**
       - /actuator/**
+      - /favicon.ico
     jwt:
       access-token:
         base64-secret-key: ZGN0LWJhc2Utc2VjcmV0LWtleS1mb3ItYWNjZXNzLXRva2VuLXZhbGlkYXRpb24=
@@ -125,6 +128,22 @@ app:
         base64-secret-key: ZGN0LWJhc2Utc2VjcmV0LWtleS1yZWZyZXNoLXRva2VuLXZhbGlkaXR5LW1zLWZvci1yZW1lbWJlci1tZS1tcw==
         validity: 3600000 # 1 hour
         validity-for-remember: 604800000 # 7 days
+    oauth2:
+      activate: enabled
+      base-authorize-uri: /api/p/v1/users/oauth2/authorize # Add /{registrationId} (eg: /google) when calling from clients
+      clients:
+        - provider: google
+          client-name: Demo Starter Google
+          client-id: ${GOOGLE_CLIENT_ID}
+          client-secret: ${GOOGLE_CLIENT_SECRET}
+          scope:
+            - https://www.googleapis.com/auth/userinfo.email
+            - https://www.googleapis.com/auth/userinfo.profile
+          authorization-uri: https://accounts.google.com/o/oauth2/auth
+          redirect-uri: ${app.domain}/login/oauth2/code/google
+          token-uri: https://oauth2.googleapis.com/token
+          user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+          username-attribute-name: sub
 
   http-client:
     rest-template: enabled
