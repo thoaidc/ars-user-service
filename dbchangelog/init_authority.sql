@@ -73,10 +73,7 @@ WHERE r.code = 'ROLE_ADMIN';
 -- Re-add all permissions to ROLE_ADMIN
 INSERT INTO role_authority (
     role_id,
-    role_code,
     authority_id,
-    authority_code,
-    authority_parent_code,
     created_by,
     created_date,
     last_modified_by,
@@ -84,10 +81,7 @@ INSERT INTO role_authority (
 )
 SELECT
     r.id AS role_id,
-    r.code AS role_code,
     a.id AS authority_id,
-    a.code AS authority_code,
-    a.parent_code AS authority_parent_code,
     'system' AS created_by,
     CURRENT_TIMESTAMP AS created_date,
     'system' AS last_modified_by,
@@ -107,10 +101,7 @@ WHERE r.code = 'ROLE_DEFAULT';
 -- Re-add all permissions to ROLE_DEFAULT
 INSERT INTO role_authority (
     role_id,
-    role_code,
     authority_id,
-    authority_code,
-    authority_parent_code,
     created_by,
     created_date,
     last_modified_by,
@@ -118,10 +109,7 @@ INSERT INTO role_authority (
 )
 SELECT
     r.id AS role_id,
-    r.code AS role_code,
     a.id AS authority_id,
-    a.code AS authority_code,
-    a.parent_code AS authority_parent_code,
     'system' AS created_by,
     CURRENT_TIMESTAMP AS created_date,
     'system' AS last_modified_by,
