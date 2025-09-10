@@ -11,7 +11,7 @@
 # https://docs.spring.io/spring-boot/reference/features/profiles.html
 # ===================================================================
 
-spring.config.import: optional:configserver:http://localhost:8888
+spring.config.import: optional:configserver:http://ars-config-server:8888
 
 logging:
   level:
@@ -23,17 +23,17 @@ logging:
     console: UTF-8
     file: UTF-8
   file:
-    path: /opt/logs/user-service
+    path: /app/logs
 
 spring:
   cloud:
     config:
-      uri: http://localhost:8888
+      uri: http://ars-config-server:8888
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ars_user?serverTimezone=UTC
-    username: admin
-    password: 123456
+    url: jdbc:mysql://ars-mysql:3306/ars_user?serverTimezone=UTC
+    username: ${ARS_DB_USERNAME}
+    password: ${ARS_DB_PASSWORD}
     hikari:
       poolName: Hikari
       # AllowPoolSuspension means pause connection when there is a problem
@@ -89,24 +89,25 @@ server:
         # Cookies will still be sent with each HTTP request (and can therefore be used for session authentication)
         # But Cookies cannot be accessed from the client side using JavaScript (e.g. via document.cookie)
         http-only: true
-  port: 8000
+  port: 8080
+  address: 0.0.0.0
 
 # Eureka client configuration
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://ars-discovery-server:8761/eureka/
     healthcheck:
       enabled: true
     register-with-eureka: true
     fetch-registry: true
   instance:
     prefer-ip-address: true
-    hostname: localhost
+    hostname: ars-user-service
     instanceId: ${spring.application.name}:${server.port}
 
 app:
-  domain: http://localhost:8080 # API Gateway domain
+  domain: http://thedungp601.ddns.net:8080 # API Gateway domain
   datasource: enabled
   jpa-auditing: enabled
 
