@@ -13,14 +13,12 @@ import jakarta.persistence.UniqueConstraint;
 )
 @SuppressWarnings("unused")
 public class RoleAuthority extends AbstractAuditingEntity {
-
     @Column(name = "role_id", nullable = false)
     private Integer roleId;
 
     @Column(name = "authority_id", nullable = false)
     private Integer authorityId;
 
-    // ===== GETTER/SETTER =====
     public Integer getRoleId() {
         return roleId;
     }
@@ -37,7 +35,6 @@ public class RoleAuthority extends AbstractAuditingEntity {
         this.authorityId = authorityId;
     }
 
-    // ===== BUILDER =====
     public static class Builder {
         private Integer roleId;
         private Integer authorityId;

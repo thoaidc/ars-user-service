@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         Optional<Users> userOptional = userRepository.findById(userId);
 
         if (userOptional.isEmpty()) {
-            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_EXISTED);
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_FOUND);
         }
 
         Users user = userOptional.get();
@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
         Optional<Users> userOptional = userRepository.findById(requestDTO.getId());
 
         if (userOptional.isEmpty()) {
-            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_EXISTED);
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_FOUND);
         }
 
         List<Roles> userRolesForUpdate = roleRepository.findAllById(requestDTO.getRoleIds());
@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
         Optional<Users> userOptional = userRepository.findById(requestDTO.getId());
 
         if (userOptional.isEmpty()) {
-            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_EXISTED);
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_FOUND);
         }
 
         Users user = userOptional.get();

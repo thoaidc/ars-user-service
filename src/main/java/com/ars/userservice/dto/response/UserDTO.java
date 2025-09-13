@@ -1,17 +1,14 @@
 package com.ars.userservice.dto.response;
 
 import com.ars.userservice.dto.mapping.IRoleDTO;
-import com.dct.model.constants.BaseDatetimeConstants;
 import com.dct.model.constants.BaseUserConstants;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.dct.model.dto.response.AuditingDTO;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class UserDTO {
-    private Integer id;
+public class UserDTO extends AuditingDTO {
     private String fullname;
     private String username;
     private String email;
@@ -19,31 +16,7 @@ public class UserDTO {
     private String address;
     private String status;
     private boolean isAdmin;
-    private String createdBy;
-
-    @JsonFormat(
-        shape = JsonFormat.Shape.STRING,
-        pattern = BaseDatetimeConstants.Formatter.DD_MM_YYYY_HH_MM_SS_DASH,
-        timezone = BaseDatetimeConstants.ZoneID.DEFAULT
-    )
-    private Instant createdDate;
-    private String lastModifiedBy;
-
-    @JsonFormat(
-        shape = JsonFormat.Shape.STRING,
-        pattern = BaseDatetimeConstants.Formatter.DD_MM_YYYY_HH_MM_SS_DASH,
-        timezone = BaseDatetimeConstants.ZoneID.DEFAULT
-    )
-    private Instant lastModifiedDate;
     private List<IRoleDTO> roles = new ArrayList<>();
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getFullname() {
         return fullname;
@@ -107,37 +80,5 @@ public class UserDTO {
 
     public void setRoles(List<IRoleDTO> roles) {
         this.roles = roles;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Instant getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public Instant getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
     }
 }

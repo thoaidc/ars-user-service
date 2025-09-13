@@ -92,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
             Optional<IAuthenticationDTO> authentication = userRepository.findAuthenticationByUsernameOrEmail(username);
 
             if (authentication.isEmpty()) {
-                throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_EXISTED);
+                throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_NOT_FOUND);
             }
 
             AuthenticationResponseDTO authenticationDTO = new AuthenticationResponseDTO();

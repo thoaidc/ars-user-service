@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 @Table(name = "authority")
 @SuppressWarnings("unused")
 public class Authority extends AbstractAuditingEntity {
-
     @Column(name = "parent_id")
     private Integer parentId;
 
@@ -25,7 +24,6 @@ public class Authority extends AbstractAuditingEntity {
     @Column(name = "description", columnDefinition = "NVARCHAR(255)")
     private String description;
 
-    // ===== GETTER/SETTER =====
     public Integer getParentId() {
         return parentId;
     }
@@ -66,7 +64,6 @@ public class Authority extends AbstractAuditingEntity {
         this.description = description;
     }
 
-    // ===== BUILDER =====
     public static class Builder {
         private Integer parentId;
         private String parentCode;

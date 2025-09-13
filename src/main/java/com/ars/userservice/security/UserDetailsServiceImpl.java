@@ -46,13 +46,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Users user = new Users();
         BeanUtils.copyProperties(authentication.get(), user);
         Set<String> userPermissions = authorityRepository.findAllByUserId(user.getId());
-
         Collection<SimpleGrantedAuthority> userAuthorities = userPermissions
                 .stream()
                 .filter(StringUtils::hasText)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
-
         return UserDetailsCustom.customBuilder()
                 .user(user)
                 .status(user.getStatus())

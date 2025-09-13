@@ -19,7 +19,6 @@ public class RegisterRequestDTO {
     @Size(max = 20, message = BaseExceptionConstants.PASSWORD_MAX_LENGTH)
     @Pattern(regexp = BaseRegexConstants.PASSWORD_PATTERN, message = BaseExceptionConstants.PASSWORD_INVALID)
     private String password;
-
     private String fullname;
 
     @NotBlank(message = BaseExceptionConstants.EMAIL_NOT_BLANK)

@@ -24,7 +24,6 @@ import com.dct.model.constants.BaseRegexConstants;
  */
 @SuppressWarnings("unused")
 public class LoginRequestDTO {
-
     @NotBlank(message = BaseExceptionConstants.USERNAME_NOT_BLANK)
     @Size(min = 2, message = BaseExceptionConstants.USERNAME_MIN_LENGTH)
     @Size(max = 50, message = BaseExceptionConstants.USERNAME_MAX_LENGTH)

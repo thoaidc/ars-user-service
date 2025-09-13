@@ -20,7 +20,6 @@ import java.util.List;
 @Table(name = "users")
 @SuppressWarnings("unused")
 public class Users extends AbstractAuditingEntity {
-
     @Column(name = "username", nullable = false, length = 50, unique = true)
     private String username;
 
@@ -70,7 +69,6 @@ public class Users extends AbstractAuditingEntity {
     )
     private List<Roles> roles = new ArrayList<>();
 
-    // ===== GETTER/SETTER =====
     public String getUsername() {
         return username;
     }
@@ -151,7 +149,6 @@ public class Users extends AbstractAuditingEntity {
         this.roles = roles;
     }
 
-    // === BUILDER ===
     public static class Builder {
         private String username;
         private String password;

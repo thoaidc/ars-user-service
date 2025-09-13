@@ -13,9 +13,7 @@ import com.dct.model.dto.response.BaseResponseDTO;
  * @author thoaidc
  */
 public interface ResultConstants {
-
     // Authenticate account result messages
     String LOGIN_SUCCESS = "result.auth.login.success";
     String REGISTER_SUCCESS = "result.auth.register.success";
-    String GET_USER_SUCCESS = "result.user.info.success";
 }

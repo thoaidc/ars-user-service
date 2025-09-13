@@ -10,7 +10,6 @@ import jakarta.persistence.UniqueConstraint;
 @Table(name = "user_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
 @SuppressWarnings("unused")
 public class UserRole extends AbstractAuditingEntity {
-
     @Column(name = "user_id", nullable = false)
     private Integer userId;
 
@@ -24,7 +23,6 @@ public class UserRole extends AbstractAuditingEntity {
         this.roleId = roleId;
     }
 
-    // ===== GETTER/SETTER =====
     public Integer getUserId() {
         return userId;
     }
@@ -41,7 +39,6 @@ public class UserRole extends AbstractAuditingEntity {
         this.roleId = roleId;
     }
 
-    // ===== BUILDER =====
     public static class Builder {
         private Integer userId;
         private Integer roleId;

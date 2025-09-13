@@ -1,17 +1,14 @@
 package com.ars.userservice.dto.response;
 
-import com.dct.model.constants.BaseDatetimeConstants;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.dct.model.dto.response.AuditingDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.servlet.http.Cookie;
 
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("unused")
-public class AuthenticationResponseDTO {
-    private Integer id;
+public class AuthenticationResponseDTO extends AuditingDTO {
     private String fullname;
     private String email;
     private String phone;
@@ -22,23 +19,7 @@ public class AuthenticationResponseDTO {
     private String accessToken;
     @JsonIgnore
     private Cookie cookie;
-    private String createdBy;
-    private String lastModifiedBy;
     private Set<String> authorities = new HashSet<>();
-
-    @JsonFormat(
-        shape = JsonFormat.Shape.STRING,
-        pattern = BaseDatetimeConstants.Formatter.DD_MM_YYYY_HH_MM_SS_DASH,
-        timezone = BaseDatetimeConstants.ZoneID.DEFAULT
-    )
-    private Instant createdDate;
-
-    @JsonFormat(
-        shape = JsonFormat.Shape.STRING,
-        pattern = BaseDatetimeConstants.Formatter.DD_MM_YYYY_HH_MM_SS_DASH,
-        timezone = BaseDatetimeConstants.ZoneID.DEFAULT
-    )
-    private Instant lastModifiedDate;
 
     public String getFullname() {
         return fullname;
@@ -102,46 +83,6 @@ public class AuthenticationResponseDTO {
 
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public Instant getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
     }
 
     public String getPhone() {

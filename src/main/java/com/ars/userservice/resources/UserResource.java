@@ -2,6 +2,7 @@ package com.ars.userservice.resources;
 
 import com.ars.userservice.dto.request.user.ChangeEmailRequestDTO;
 import com.ars.userservice.dto.request.user.ChangePasswordRequestDTO;
+import com.ars.userservice.dto.request.user.ChangeUserStatusRequestDTO;
 import com.ars.userservice.dto.request.user.CreateUserRequestDTO;
 import com.ars.userservice.dto.request.user.RecoverPasswordRequestDTO;
 import com.ars.userservice.dto.request.user.UpdateUserRequestDTO;
@@ -55,10 +56,10 @@ public class UserResource {
         return userService.updateUser(requestDTO);
     }
 
-    @DeleteMapping("/{userId}")
-    @CheckAuthorize(authorities = BaseRoleConstants.User.DELETE)
-    public BaseResponseDTO deleteUser(@PathVariable Integer userId) {
-        return userService.deleteUser(userId);
+    @PutMapping("/status")
+    @CheckAuthorize(authorities = BaseRoleConstants.User.UPDATE)
+    public BaseResponseDTO changeUserStatus(@Valid @RequestBody ChangeUserStatusRequestDTO requestDTO) {
+        return userService.changeStatus(requestDTO);
     }
 
     @PutMapping("/password")
@@ -76,5 +77,11 @@ public class UserResource {
     @PostMapping("/recover")
     public BaseResponseDTO recoverPassword(@Valid @RequestBody RecoverPasswordRequestDTO requestDTO) {
         return userService.recoverPassword(requestDTO);
+    }
+
+    @DeleteMapping("/{userId}")
+    @CheckAuthorize(authorities = BaseRoleConstants.User.DELETE)
+    public BaseResponseDTO deleteUser(@PathVariable Integer userId) {
+        return userService.deleteUser(userId);
     }
 }

@@ -16,7 +16,6 @@ import com.ars.userservice.service.RoleService;
 import com.dct.model.common.BaseCommon;
 import com.dct.model.common.MessageTranslationUtils;
 import com.dct.model.constants.BaseExceptionConstants;
-import com.dct.model.constants.BaseResultConstants;
 import com.dct.model.dto.auth.AuthorityTreeNode;
 import com.dct.model.dto.request.BaseRequestDTO;
 import com.dct.model.dto.response.BaseResponseDTO;
@@ -64,7 +63,7 @@ public class RoleServiceImpl implements RoleService {
         Optional<Roles> roleOptional = roleRepository.findById(roleId);
 
         if (roleOptional.isEmpty()) {
-            throw new BaseBadRequestException(ENTITY_NAME, BaseResultConstants.DATA_NOT_FOUND);
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.DATA_NOT_FOUND);
         }
 
         RoleDTO roleDTO = new RoleDTO();
@@ -155,7 +154,7 @@ public class RoleServiceImpl implements RoleService {
         Optional<Roles> roleOptional = roleRepository.findById(request.getId());
 
         if (roleOptional.isEmpty()) {
-            throw new BaseBadRequestException(ENTITY_NAME, BaseResultConstants.DATA_NOT_FOUND);
+            throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.DATA_NOT_FOUND);
         }
 
         Roles role = roleOptional.get();

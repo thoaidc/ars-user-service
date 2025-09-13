@@ -19,7 +19,6 @@ import java.util.List;
 @Table(name = "roles")
 @SuppressWarnings("unused")
 public class Roles extends AbstractAuditingEntity {
-
     @Column(name = "name", nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String name;
 
@@ -42,7 +41,6 @@ public class Roles extends AbstractAuditingEntity {
     @JsonIgnore
     private List<Authority> authorities = new ArrayList<>();
 
-    // ===== GETTER/SETTER =====
     public String getName() {
         return name;
     }
@@ -75,7 +73,6 @@ public class Roles extends AbstractAuditingEntity {
         this.authorities = authorities;
     }
 
-    // ===== BUILDER =====
     public static class Builder {
         private String name;
         private String code;

@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserDetailsCustom extends User {
-
     private final Users user;
     private final Set<String> authorities = new HashSet<>();
 
@@ -77,7 +76,6 @@ public class UserDetailsCustom extends User {
 
         public UserDetailsCustom build() {
             boolean credentialsNonExpired = true;
-
             return new UserDetailsCustom(
                 user,
                 authorities,
