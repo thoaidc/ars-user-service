@@ -1,7 +1,9 @@
 package com.ars.userservice.service.impl;
 
+import com.ars.userservice.constants.UserConstants;
 import com.ars.userservice.dto.mapping.IRoleDTO;
 import com.ars.userservice.dto.mapping.IUserDTO;
+import com.ars.userservice.dto.mapping.OAuth2UserDTO;
 import com.ars.userservice.dto.request.user.ChangeEmailRequestDTO;
 import com.ars.userservice.dto.request.user.ChangePasswordRequestDTO;
 import com.ars.userservice.dto.request.user.ChangeUserStatusRequestDTO;
@@ -18,6 +20,7 @@ import com.ars.userservice.repository.UserRoleRepository;
 import com.ars.userservice.service.RoleService;
 import com.ars.userservice.service.UserService;
 
+import com.dct.model.common.CredentialGenerator;
 import com.dct.model.constants.BaseExceptionConstants;
 import com.dct.model.constants.BaseRegexConstants;
 import com.dct.model.constants.BaseUserConstants;
@@ -138,6 +141,28 @@ public class UserServiceImpl implements UserService {
         user.setRoles(userRolesForUpdate);
         userRepository.save(user);
         return BaseResponseDTO.builder().ok(user);
+    }
+
+    @Override
+    @Transactional
+    public BaseResponseDTO createOrUpdateUser(OAuth2UserDTO userDTO) {
+        Optional<Users> userOptional = userRepository.findByEmail(userDTO.getEmail());
+
+        if (userOptional.isEmpty()) {
+            String rawPassword = CredentialGenerator.generatePassword(UserConstants.DEFAULT_PASSWORD_LENGTH);
+            Users newUser = Users.builder()
+                    .username(userDTO.getEmail())
+                    .fullname(userDTO.getName())
+                    .email(userDTO.getEmail())
+                    .status(BaseUserConstants.Status.ACTIVE)
+                    .password(passwordEncoder.encode(rawPassword))
+                    .isAdmin(Boolean.FALSE)
+                    .build();
+            userRepository.save(newUser);
+            return BaseResponseDTO.builder().ok(newUser);
+        }
+
+        return BaseResponseDTO.builder().ok(userOptional.get());
     }
 
     @Override

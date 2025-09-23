@@ -1,6 +1,7 @@
 package com.ars.userservice.service.impl;
 
 import com.ars.userservice.constants.ResultConstants;
+import com.ars.userservice.constants.UserConstants;
 import com.ars.userservice.dto.mapping.IAuthenticationDTO;
 import com.ars.userservice.dto.request.user.LoginRequestDTO;
 import com.ars.userservice.dto.request.user.RegisterRequestDTO;
@@ -17,6 +18,7 @@ import com.dct.config.security.filter.BaseJwtProvider;
 import com.dct.model.common.SecurityUtils;
 import com.dct.model.config.properties.SecurityProps;
 import com.dct.model.constants.ActivateStatus;
+import com.dct.model.constants.BaseDatetimeConstants;
 import com.dct.model.constants.BaseExceptionConstants;
 import com.dct.model.constants.BaseHttpStatusConstants;
 import com.dct.model.constants.BaseSecurityConstants;
@@ -149,29 +151,13 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = this.authenticate(username, rawPassword);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsCustom userDetails = (UserDetailsCustom) authentication.getPrincipal();
-        AuthenticationResponseDTO results = new AuthenticationResponseDTO();
-        Users user = userDetails.getUser();
-        BeanUtils.copyProperties(user, results);
-        results.setAuthorities(userDetails.getUserAuthorities());
-        results.setStatus(BaseUserConstants.Status.toString(user.getStatus()));
-        BaseTokenDTO tokenDTO = BaseTokenDTO.builder()
-                .userId(user.getId())
-                .username(user.getUsername())
-                .authorities(userDetails.getUserAuthorities())
-                .rememberMe(loginRequest.getRememberMe())
-                .build();
+        return authorize(userDetails.getUser(), userDetails.getUserAuthorities(), loginRequest.getRememberMe());
+    }
 
-        String jwtAccessToken = tokenProvider.generateAccessToken(tokenDTO);
-        String jwtRefreshToken = tokenProvider.generateRefreshToken(tokenDTO);
-        results.setAccessToken(jwtAccessToken);
-        results.setCookie(this.createSecureCookie(jwtRefreshToken, loginRequest.getRememberMe()));
-
-        return BaseResponseDTO.builder()
-                .code(BaseHttpStatusConstants.ACCEPTED)
-                .message(ResultConstants.LOGIN_SUCCESS)
-                .success(Boolean.TRUE)
-                .result(results)
-                .build();
+    @Override
+    public BaseResponseDTO authenticate(Users user) {
+        Set<String> authorities = authorityRepository.findAllByUserId(user.getId());
+        return authorize(user, authorities, Boolean.FALSE);
     }
 
     @Override
@@ -191,11 +177,6 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         String accessToken = tokenProvider.generateAccessToken(tokenDTO);
         return BaseResponseDTO.builder().ok(accessToken);
-    }
-
-    @Override
-    public BaseResponseDTO logout() {
-        return null;
     }
 
     private Authentication authenticate(String username, String rawPassword) {
@@ -227,17 +208,51 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    private BaseResponseDTO authorize(Users user, Set<String> authorities, boolean isRememberMe) {
+        AuthenticationResponseDTO results = new AuthenticationResponseDTO();
+        BeanUtils.copyProperties(user, results);
+        results.setAuthorities(authorities);
+        results.setStatus(BaseUserConstants.Status.toString(user.getStatus()));
+        BaseTokenDTO tokenDTO = BaseTokenDTO.builder()
+                .userId(user.getId())
+                .username(user.getUsername())
+                .authorities(authorities)
+                .rememberMe(isRememberMe)
+                .build();
+        String jwtAccessToken = tokenProvider.generateAccessToken(tokenDTO);
+        String jwtRefreshToken = tokenProvider.generateRefreshToken(tokenDTO);
+        results.setAccessToken(jwtAccessToken);
+        results.setCookie(this.createSecureCookie(jwtRefreshToken, isRememberMe));
+        return BaseResponseDTO.builder()
+                .code(BaseHttpStatusConstants.ACCEPTED)
+                .message(ResultConstants.LOGIN_SUCCESS)
+                .success(Boolean.TRUE)
+                .result(results)
+                .build();
+    }
+
     private Cookie createSecureCookie(String refreshToken, boolean isRememberMe) {
         Cookie cookie = new Cookie(BaseSecurityConstants.COOKIES.HTTP_ONLY_TOKEN, refreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(ActivateStatus.ENABLED.equals(securityProps.getEnabledTls()));
-        cookie.setPath("/api/p/v1/users/refresh-token");
-        cookie.setAttribute("SameSite", "Strict");
+        cookie.setPath(UserConstants.REFRESH_TOKEN_API);
+        cookie.setAttribute(BaseSecurityConstants.COOKIES.SECURITY_ATTRIBUTE, BaseSecurityConstants.COOKIES.SECURITY_MODE);
         // cookie.domain("frontend.com");
         long refreshTokenValidity = securityProps.getJwt().getRefreshToken().getValidity();
         long refreshTokenValidityForRemember = securityProps.getJwt().getRefreshToken().getValidityForRemember();
         long expiredTimeMillis = isRememberMe ? refreshTokenValidityForRemember : refreshTokenValidity;
-        cookie.setMaxAge((int) (expiredTimeMillis / 1000L));
+        cookie.setMaxAge((int) (expiredTimeMillis / BaseDatetimeConstants.ONE_SECOND_IN_MILLIS));
+        return cookie;
+    }
+
+    public Cookie resetCookie() {
+        Cookie cookie = new Cookie(BaseSecurityConstants.COOKIES.HTTP_ONLY_TOKEN, null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(ActivateStatus.ENABLED.equals(securityProps.getEnabledTls()));
+        cookie.setPath(UserConstants.REFRESH_TOKEN_API);
+        cookie.setAttribute(BaseSecurityConstants.COOKIES.SECURITY_ATTRIBUTE, BaseSecurityConstants.COOKIES.SECURITY_MODE);
+        // cookie.domain("frontend.com");
+        cookie.setMaxAge(BaseSecurityConstants.COOKIES.COOKIE_EXPIRED);
         return cookie;
     }
 }

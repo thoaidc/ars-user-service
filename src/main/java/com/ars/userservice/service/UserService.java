@@ -1,5 +1,6 @@
 package com.ars.userservice.service;
 
+import com.ars.userservice.dto.mapping.OAuth2UserDTO;
 import com.ars.userservice.dto.request.user.ChangeEmailRequestDTO;
 import com.ars.userservice.dto.request.user.ChangePasswordRequestDTO;
 import com.ars.userservice.dto.request.user.ChangeUserStatusRequestDTO;
@@ -14,6 +15,7 @@ public interface UserService {
     BaseResponseDTO getUserDetail(Integer userId);
     BaseResponseDTO createUser(CreateUserRequestDTO requestDTO);
     BaseResponseDTO updateUser(UpdateUserRequestDTO requestDTO);
+    BaseResponseDTO createOrUpdateUser(OAuth2UserDTO userDTO);
     BaseResponseDTO deleteUser(Integer userId);
     BaseResponseDTO changeEmail(ChangeEmailRequestDTO requestDTO);
     BaseResponseDTO changeStatus(ChangeUserStatusRequestDTO requestDTO);

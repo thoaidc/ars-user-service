@@ -1,5 +1,6 @@
 package com.ars.userservice.dto.mapping;
 
+@SuppressWarnings("unused")
 public interface IAuthorityDTO {
     Integer getId();
     Integer getParentId();

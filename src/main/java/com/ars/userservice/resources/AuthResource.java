@@ -53,7 +53,9 @@ public class AuthResource {
     }
 
     @PostMapping("/v1/users/logout")
-    public BaseResponseDTO logout() {
-        return authService.logout();
+    public BaseResponseDTO logout(HttpServletResponse response) {
+        Cookie cookie = authService.resetCookie();
+        response.addCookie(cookie);
+        return BaseResponseDTO.builder().ok();
     }
 }

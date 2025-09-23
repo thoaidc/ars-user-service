@@ -8,7 +8,6 @@ public interface IAuthenticationDTO {
     String getUsername();
     String getPassword();
     String getFullname();
-    String getAddress();
     String getEmail();
     String getPhone();
     boolean getIsAdmin();

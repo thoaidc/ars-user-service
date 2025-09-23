@@ -49,7 +49,6 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
                    u.password,
                    u.fullname,
                    u.email,
-                   u.address,
                    u.phone,
                    u.is_admin isAdmin,
                    u.status,
@@ -71,4 +70,5 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
     @Modifying
     @Query(value = "UPDATE ars_user.users a SET a.status = ?2 WHERE a.id = ?1", nativeQuery = true)
     void updateUserStatusById(Integer userId, byte status);
+    Optional<Users> findByEmail(String email);
 }
