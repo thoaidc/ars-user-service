@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/p/v1/users")
 public class AuthResource {
     private final AuthService authService;
 
@@ -26,17 +26,12 @@ public class AuthResource {
         this.authService = authService;
     }
 
-    @PostMapping("/v1/users/status")
-    public BaseResponseDTO checkUserAuthenticationStatus() {
-        return authService.checkAuthenticationStatus();
-    }
-
-    @PostMapping("/p/v1/users/register")
+    @PostMapping("/register")
     public BaseResponseDTO register(@Valid @RequestBody RegisterRequestDTO requestDTO, @RequestParam boolean isShop) {
         return authService.register(requestDTO, isShop);
     }
 
-    @PostMapping("/p/v1/users/authenticate")
+    @PostMapping("/authenticate")
     public BaseResponseDTO authenticate(@Valid @RequestBody LoginRequestDTO requestDTO, HttpServletResponse response) {
         BaseResponseDTO responseDTO = authService.authenticate(requestDTO);
         AuthenticationResponseDTO authenticationResponse = (AuthenticationResponseDTO) responseDTO.getResult();
@@ -47,12 +42,12 @@ public class AuthResource {
         return responseDTO;
     }
 
-    @PostMapping("/p/v1/users/refresh-token")
+    @PostMapping("/refresh-token")
     public BaseResponseDTO refreshToken(HttpServletRequest request) {
         return authService.refreshToken(request);
     }
 
-    @PostMapping("/v1/users/logout")
+    @PostMapping("/logout")
     public BaseResponseDTO logout(HttpServletResponse response) {
         Cookie cookie = authService.resetCookie();
         response.addCookie(cookie);

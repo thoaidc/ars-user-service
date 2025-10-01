@@ -6,6 +6,7 @@ import com.ars.userservice.dto.request.user.ChangeUserStatusRequestDTO;
 import com.ars.userservice.dto.request.user.CreateUserRequestDTO;
 import com.ars.userservice.dto.request.user.RecoverPasswordRequestDTO;
 import com.ars.userservice.dto.request.user.UpdateUserRequestDTO;
+import com.ars.userservice.service.AuthService;
 import com.ars.userservice.service.UserService;
 
 import com.dct.config.aop.annotation.CheckAuthorize;
@@ -29,9 +30,16 @@ import org.springframework.web.bind.annotation.RestController;
 @CheckAuthorize(authorities = BaseRoleConstants.User.USER)
 public class UserResource {
     private final UserService userService;
+    private final AuthService authService;
 
-    public UserResource(UserService userService) {
+    public UserResource(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
+    }
+
+    @PostMapping("/status")
+    public BaseResponseDTO checkUserAuthenticationStatus() {
+        return authService.checkAuthenticationStatus();
     }
 
     @GetMapping
