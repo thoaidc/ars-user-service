@@ -31,7 +31,7 @@ spring:
       uri: http://ars-config-server:8888
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://ars-mysql:3306/ars_user?serverTimezone=UTC
+    url: jdbc:mysql://ars-mysql:3306/ars_user?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh
     username: ${ARS_DB_USERNAME}
     password: ${ARS_DB_PASSWORD}
     hikari:

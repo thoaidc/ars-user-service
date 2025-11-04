@@ -10,6 +10,7 @@ public interface IAuthenticationDTO {
     String getFullname();
     String getEmail();
     String getPhone();
+    String getType();
     boolean getIsAdmin();
     byte getStatus();
     String getCreatedBy();

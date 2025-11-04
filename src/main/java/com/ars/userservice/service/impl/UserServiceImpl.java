@@ -157,6 +157,7 @@ public class UserServiceImpl implements UserService {
                     .status(BaseUserConstants.Status.ACTIVE)
                     .password(passwordEncoder.encode(rawPassword))
                     .isAdmin(Boolean.FALSE)
+                    .type("USER")
                     .build();
             userRepository.save(newUser);
             return BaseResponseDTO.builder().ok(newUser);

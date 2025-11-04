@@ -14,6 +14,7 @@ public class AuthenticationResponseDTO extends AuditingDTO {
     private String phone;
     private String address;
     private String username;
+    private String type;
     private boolean isAdmin;
     private String status;
     private String accessToken;
@@ -75,6 +76,14 @@ public class AuthenticationResponseDTO extends AuditingDTO {
 
     public void setCookie(Cookie cookie) {
         this.cookie = cookie;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public boolean getIsAdmin() {

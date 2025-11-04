@@ -50,6 +50,7 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
                    u.fullname,
                    u.email,
                    u.phone,
+                   u.type,
                    u.is_admin isAdmin,
                    u.status,
                    u.created_by as createdBy,

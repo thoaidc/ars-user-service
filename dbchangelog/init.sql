@@ -24,6 +24,7 @@ CREATE TABLE users (
     normalized_name VARCHAR(50),
     email VARCHAR(100) UNIQUE,
     phone VARCHAR(20),
+    type VARCHAR(20) NOT NULL DEFAULT 'USER',
     status TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '0: Dừng hoạt động, 1: Hoạt động, 2: Bị khóa, 3: Đã xóa',
     is_admin TINYINT(1) NOT NULL DEFAULT FALSE COMMENT 'Quyền admin: 1 = admin, 0 = user',
     created_by VARCHAR(50),

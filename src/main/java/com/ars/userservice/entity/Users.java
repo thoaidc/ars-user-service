@@ -39,6 +39,9 @@ public class Users extends AbstractAuditingEntity {
     @Column(name = "phone", length = 20)
     private String phone;
 
+    @Column(name = "type", length = 20, nullable = false)
+    private String type;
+
     /**
      * 0: Inactive <p>
      * 1: Active <p>
@@ -130,6 +133,14 @@ public class Users extends AbstractAuditingEntity {
         this.isAdmin = isAdmin;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public List<Roles> getRoles() {
         return roles;
     }
@@ -145,6 +156,7 @@ public class Users extends AbstractAuditingEntity {
         private String normalizedName;
         private String email;
         private String phone;
+        private String type;
         private byte status = BaseUserConstants.Status.ACTIVE;
         private boolean isAdmin = false;
         private List<Roles> roles = new ArrayList<>();
@@ -184,6 +196,11 @@ public class Users extends AbstractAuditingEntity {
             return this;
         }
 
+        public Builder type(String type) {
+            this.type = type;
+            return this;
+        }
+
         public Builder isAdmin(boolean isAdmin) {
             this.isAdmin = isAdmin;
             return this;
@@ -204,6 +221,7 @@ public class Users extends AbstractAuditingEntity {
             user.setPhone(this.phone);
             user.setStatus(this.status);
             user.setIsAdmin(this.isAdmin);
+            user.setType(this.type);
             user.setRoles(this.roles);
             return user;
         }
