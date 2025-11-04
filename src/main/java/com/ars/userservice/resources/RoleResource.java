@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/roles")
+@RequestMapping("/api/v1/users/roles")
 @CheckAuthorize(authorities = BaseRoleConstants.Role.ROLE)
 public class RoleResource {
     private final RoleService roleService;
