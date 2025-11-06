@@ -103,11 +103,11 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
-    hostname: ars-user-service
-    instanceId: ${spring.application.name}:${server.port}
+    ip-address: ${spring.cloud.client.ip-address}
+    instanceId: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
 
 app:
-  domain: http://thedungp601.ddns.net:8080 # API Gateway domain
+  domain: localhost:8080 # API Gateway domain
   datasource: enabled
   jpa-auditing: enabled
 
