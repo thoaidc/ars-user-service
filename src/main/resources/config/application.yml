@@ -24,7 +24,15 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,refresh
+        include:
+          - health
+          - info
+          - metrics
+          - refresh
+          - prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
   endpoint:
     health:
       show-details: always
@@ -33,3 +41,7 @@ management:
       enabled: false
     redis:
       enabled: false
+  prometheus:
+    metrics:
+      export:
+        enabled: true

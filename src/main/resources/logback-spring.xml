@@ -5,9 +5,17 @@
     <!-- Include custom config from dct-starter-model FIRST -->
     <include resource="logback/base.xml"/>
 
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5044</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app_name":"ars_user_service"}</customFields>
+        </encoder>
+    </appender>
+
     <root>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
+        <appender-ref ref="LOGSTASH"/>
     </root>
 
     <!-- Override/add your own logger below if needed -->
