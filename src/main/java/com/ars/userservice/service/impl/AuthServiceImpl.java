@@ -121,6 +121,7 @@ public class AuthServiceImpl implements AuthService {
                 .email(StringUtils.trimToEmpty(requestDTO.getEmail()))
                 .phone(StringUtils.trimToEmpty(requestDTO.getPhone()))
                 .status(BaseUserConstants.Status.ACTIVE)
+                .type(UserConstants.Type.USER)
                 .build();
 
         if (isShop) {
@@ -130,6 +131,7 @@ public class AuthServiceImpl implements AuthService {
                 throw new BaseIllegalArgumentException(ENTITY_NAME, BaseExceptionConstants.ROLE_NOT_FOUND);
             }
 
+            user.setType(UserConstants.Type.SHOP);
             user.setRoles(List.of(role.get()));
             userRepository.save(user);
         }
