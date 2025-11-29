@@ -3,7 +3,6 @@ package com.ars.userservice.dto.request.role;
 import com.dct.model.constants.BaseExceptionConstants;
 import com.dct.model.dto.request.BaseRequestDTO;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +13,6 @@ public class CreateRoleRequestDTO extends BaseRequestDTO {
 
     @NotBlank(message = BaseExceptionConstants.CODE_NOT_BLANK)
     private String code;
-
-    @Size(min = 1, message = BaseExceptionConstants.ROLE_AUTHORITIES_NOT_EMPTY)
     private List<Integer> authorityIds = new ArrayList<>();
 
     public String getName() {

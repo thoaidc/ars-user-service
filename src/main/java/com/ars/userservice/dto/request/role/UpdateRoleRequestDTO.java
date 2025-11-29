@@ -21,8 +21,6 @@ public class UpdateRoleRequestDTO extends BaseRequestDTO {
 
     @NotBlank(message = BaseExceptionConstants.CODE_NOT_BLANK)
     private String code;
-
-    @Size(min = 1, message = BaseExceptionConstants.ROLE_AUTHORITIES_NOT_EMPTY)
     private List<Integer> authorityIds = new ArrayList<>();
 
     public Integer getId() {

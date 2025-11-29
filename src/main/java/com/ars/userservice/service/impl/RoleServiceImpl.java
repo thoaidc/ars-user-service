@@ -133,7 +133,7 @@ public class RoleServiceImpl implements RoleService {
         List<IAuthorityDTO> authorityDTOS = authorityRepository.findAllByIds(request.getAuthorityIds());
         List<RoleAuthority> roleAuthorities = new ArrayList<>();
 
-        if (authorityDTOS.isEmpty() || authorityDTOS.size() != request.getAuthorityIds().size()) {
+        if (authorityDTOS.size() != request.getAuthorityIds().size()) {
             throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ROLE_AUTHORITY_INVALID);
         }
 
@@ -166,7 +166,7 @@ public class RoleServiceImpl implements RoleService {
 
         List<Authority> authoritiesForUpdate = authorityRepository.findAllById(request.getAuthorityIds());
 
-        if (authoritiesForUpdate.isEmpty() || authoritiesForUpdate.size() != request.getAuthorityIds().size()) {
+        if (authoritiesForUpdate.size() != request.getAuthorityIds().size()) {
             throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ROLE_AUTHORITY_INVALID);
         }
 
