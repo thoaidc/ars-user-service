@@ -9,6 +9,8 @@ import com.ars.userservice.dto.request.user.RecoverPasswordRequestDTO;
 import com.ars.userservice.dto.request.user.UpdateUserRequestDTO;
 import com.dct.model.dto.request.BaseRequestDTO;
 import com.dct.model.dto.response.BaseResponseDTO;
+import com.dct.model.event.UserShopCompletionEvent;
+import com.dct.model.event.UserShopFailureEvent;
 
 public interface UserService {
     BaseResponseDTO getUsersWithPaging(BaseRequestDTO request);
@@ -21,4 +23,6 @@ public interface UserService {
     BaseResponseDTO changeStatus(ChangeUserStatusRequestDTO requestDTO);
     BaseResponseDTO changePassword(ChangePasswordRequestDTO requestDTO);
     BaseResponseDTO recoverPassword(RecoverPasswordRequestDTO requestDTO);
+    void updateRegisterUserWithShopCompletion(UserShopCompletionEvent event);
+    void rollbackRegisterUserWithShopFailure(UserShopFailureEvent event);
 }

@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableScheduling
 public class ArsUserServiceApplication {
     private static final Logger log = LoggerFactory.getLogger(ArsUserServiceApplication.class);
 

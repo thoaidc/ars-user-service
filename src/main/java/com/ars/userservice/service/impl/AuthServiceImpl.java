@@ -1,20 +1,25 @@
 package com.ars.userservice.service.impl;
 
+import com.ars.userservice.constants.OutBoxConstants;
 import com.ars.userservice.constants.ResultConstants;
 import com.ars.userservice.constants.UserConstants;
 import com.ars.userservice.dto.mapping.IAuthenticationDTO;
 import com.ars.userservice.dto.request.user.LoginRequestDTO;
 import com.ars.userservice.dto.request.user.RegisterRequestDTO;
+import com.ars.userservice.dto.request.user.RegisterShopRequestDTO;
 import com.ars.userservice.dto.response.AuthenticationResponseDTO;
+import com.ars.userservice.entity.OutBox;
 import com.ars.userservice.entity.Roles;
 import com.ars.userservice.entity.Users;
 import com.ars.userservice.repository.AuthorityRepository;
+import com.ars.userservice.repository.OutBoxRepository;
 import com.ars.userservice.repository.RoleRepository;
 import com.ars.userservice.repository.UserRepository;
 import com.ars.userservice.security.UserDetailsCustom;
 import com.ars.userservice.service.AuthService;
 
 import com.dct.config.security.filter.BaseJwtProvider;
+import com.dct.model.common.JsonUtils;
 import com.dct.model.common.SecurityUtils;
 import com.dct.model.config.properties.SecurityProps;
 import com.dct.model.constants.ActivateStatus;
@@ -26,6 +31,7 @@ import com.dct.model.constants.BaseUserConstants;
 import com.dct.model.dto.auth.BaseTokenDTO;
 import com.dct.model.dto.auth.BaseUserDTO;
 import com.dct.model.dto.response.BaseResponseDTO;
+import com.dct.model.event.UserCreatedEvent;
 import com.dct.model.exception.BaseAuthenticationException;
 import com.dct.model.exception.BaseBadRequestException;
 import com.dct.model.exception.BaseIllegalArgumentException;
@@ -56,6 +62,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,6 +75,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final AuthorityRepository authorityRepository;
+    private final OutBoxRepository outBoxRepository;
     private final SecurityProps securityProps;
 
     public AuthServiceImpl(AuthenticationManager authenticationManager,
@@ -76,6 +84,7 @@ public class AuthServiceImpl implements AuthService {
                            UserRepository userRepository,
                            RoleRepository roleRepository,
                            AuthorityRepository authorityRepository,
+                           OutBoxRepository outBoxRepository,
                            SecurityProps securityProps) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
@@ -83,6 +92,7 @@ public class AuthServiceImpl implements AuthService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.authorityRepository = authorityRepository;
+        this.outBoxRepository = outBoxRepository;
         this.securityProps = securityProps;
     }
 
@@ -109,39 +119,69 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public BaseResponseDTO register(RegisterRequestDTO requestDTO, boolean isShop) {
-        if (userRepository.existsByUsernameOrEmail(requestDTO.getUsername(), requestDTO.getEmail())) {
+    public BaseResponseDTO register(RegisterRequestDTO requestDTO) {
+        Users user = saveUser(requestDTO, Boolean.FALSE);
+        return BaseResponseDTO.builder()
+                .code(BaseHttpStatusConstants.CREATED)
+                .message(ResultConstants.REGISTER_SUCCESS)
+                .success(Boolean.TRUE)
+                .result(user)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public BaseResponseDTO registerShop(RegisterShopRequestDTO request) {
+        Users user = saveUser(request, Boolean.TRUE);
+        UserCreatedEvent userCreatedEvent = UserCreatedEvent.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .shopName(request.getShopName())
+                .sagaId(UUID.randomUUID().toString())
+                .build();
+        OutBox outBox = new OutBox();
+        outBox.setSagaId(userCreatedEvent.getSagaId());
+        outBox.setStatus(OutBoxConstants.Status.PENDING);
+        outBox.setType(OutBoxConstants.Type.REGISTER_USER_WITH_SHOP);
+        outBox.setValue(JsonUtils.toJsonString(userCreatedEvent));
+        outBoxRepository.save(outBox);
+        return BaseResponseDTO.builder()
+                .code(BaseHttpStatusConstants.ACCEPTED)
+                .message(ResultConstants.REGISTER_SUCCESS)
+                .success(Boolean.TRUE)
+                .result(user)
+                .build();
+    }
+
+    private Users saveUser(RegisterRequestDTO request, boolean isShop) {
+        if (userRepository.existsByUsernameOrEmail(request.getUsername(), request.getEmail())) {
             throw new BaseBadRequestException(ENTITY_NAME, BaseExceptionConstants.ACCOUNT_EXISTED);
         }
 
         Users user = Users.builder()
-                .username(StringUtils.trimToEmpty(requestDTO.getUsername()))
-                .password(passwordEncoder.encode(StringUtils.trimToEmpty(requestDTO.getPassword())))
-                .fullname(StringUtils.trimToEmpty(requestDTO.getFullname()))
-                .email(StringUtils.trimToEmpty(requestDTO.getEmail()))
-                .phone(StringUtils.trimToEmpty(requestDTO.getPhone()))
+                .username(StringUtils.trimToNull(request.getUsername()))
+                .password(passwordEncoder.encode(StringUtils.trimToNull(request.getPassword())))
+                .fullname(StringUtils.trimToNull(request.getFullname()))
+                .email(StringUtils.trimToNull(request.getEmail()))
+                .phone(StringUtils.trimToNull(request.getPhone()))
                 .status(BaseUserConstants.Status.ACTIVE)
                 .type(UserConstants.Type.USER)
                 .build();
 
         if (isShop) {
-            Optional<Roles> role = roleRepository.findRoleByCode(BaseSecurityConstants.Role.DEFAULT);
+            Optional<Roles> role = roleRepository.findRoleByCode(UserConstants.Role.SHOP_OWNER);
 
             if (role.isEmpty()) {
                 throw new BaseIllegalArgumentException(ENTITY_NAME, BaseExceptionConstants.ROLE_NOT_FOUND);
             }
 
+            user.setStatus(BaseUserConstants.Status.PENDING);
             user.setType(UserConstants.Type.SHOP);
             user.setRoles(List.of(role.get()));
-            userRepository.save(user);
         }
 
-        return BaseResponseDTO.builder()
-                .code(BaseHttpStatusConstants.ACCEPTED)
-                .message(ResultConstants.REGISTER_SUCCESS)
-                .success(Boolean.TRUE)
-                .result(userRepository.save(user))
-                .build();
+        return userRepository.save(user);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.ars.userservice.resources;
 
 import com.ars.userservice.dto.request.user.LoginRequestDTO;
 import com.ars.userservice.dto.request.user.RegisterRequestDTO;
+import com.ars.userservice.dto.request.user.RegisterShopRequestDTO;
 import com.ars.userservice.dto.response.AuthenticationResponseDTO;
 import com.ars.userservice.service.AuthService;
 import com.dct.model.dto.response.BaseResponseDTO;
@@ -14,7 +15,6 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,8 +27,13 @@ public class AuthResource {
     }
 
     @PostMapping("/register")
-    public BaseResponseDTO register(@Valid @RequestBody RegisterRequestDTO requestDTO, @RequestParam boolean isShop) {
-        return authService.register(requestDTO, isShop);
+    public BaseResponseDTO register(@Valid @RequestBody RegisterRequestDTO requestDTO) {
+        return authService.register(requestDTO);
+    }
+
+    @PostMapping("/register/shop")
+    public BaseResponseDTO registerUserWithShop(@Valid @RequestBody RegisterShopRequestDTO requestDTO) {
+        return authService.registerShop(requestDTO);
     }
 
     @PostMapping("/authenticate")

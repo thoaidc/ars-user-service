@@ -25,7 +25,7 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE,
     phone VARCHAR(20),
     type VARCHAR(20) NOT NULL DEFAULT 'USER',
-    status TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '0: Dừng hoạt động, 1: Hoạt động, 2: Bị khóa, 3: Đã xóa',
+    status TINYINT NOT NULL DEFAULT 1 COMMENT '0: Dừng hoạt động, 1: Hoạt động, 2: Bị khóa, 3: Đã xóa, -1: Chờ đăng ký shop',
     is_admin TINYINT(1) NOT NULL DEFAULT FALSE COMMENT 'Quyền admin: 1 = admin, 0 = user',
     created_by VARCHAR(50),
     last_modified_by VARCHAR(50),
@@ -87,3 +87,21 @@ CREATE TABLE role_authority (
     CONSTRAINT fk_role_authority_authority FOREIGN KEY (authority_id) REFERENCES authority(id) ON DELETE CASCADE,
     UNIQUE (role_id, authority_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================
+-- TABLE: outbox
+-- ============================
+DROP TABLE IF EXISTS outbox;
+CREATE TABLE outbox (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    saga_id VARCHAR(100) NOT NULL,
+    type VARCHAR(100) NOT NULL,
+    value VARCHAR(1000) NOT NULL,
+    status VARCHAR(20) DEFAULT 'PENDING',
+    created_by VARCHAR(50),
+    last_modified_by VARCHAR(50),
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE INDEX idx_outbox_type_status_id ON outbox (type, status, id DESC);

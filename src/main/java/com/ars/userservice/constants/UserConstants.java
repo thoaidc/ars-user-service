@@ -9,4 +9,8 @@ public interface UserConstants {
         String ADMIN = "ADMIN";
         String SHOP = "SHOP";
     }
+
+    interface Role {
+        String SHOP_OWNER = "SHOP_OWNER";
+    }
 }

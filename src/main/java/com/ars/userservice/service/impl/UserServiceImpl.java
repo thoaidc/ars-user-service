@@ -26,8 +26,12 @@ import com.dct.model.constants.BaseRegexConstants;
 import com.dct.model.constants.BaseUserConstants;
 import com.dct.model.dto.request.BaseRequestDTO;
 import com.dct.model.dto.response.BaseResponseDTO;
+import com.dct.model.event.UserShopCompletionEvent;
+import com.dct.model.event.UserShopFailureEvent;
 import com.dct.model.exception.BaseBadRequestException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +45,7 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private static final String ENTITY_NAME = "com.ars.userservice.service.impl.UserServiceImpl";
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
@@ -221,5 +226,19 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public BaseResponseDTO recoverPassword(RecoverPasswordRequestDTO requestDTO) {
         return null;
+    }
+
+    @Override
+    @Transactional
+    public void updateRegisterUserWithShopCompletion(UserShopCompletionEvent event) {
+        log.info("[REGISTER_USER_WITH_SHOP_COMPLETION] - Register successfully with information: {}", event);
+        userRepository.updateUserStatusById(event.getUserId(), BaseUserConstants.Status.ACTIVE);
+    }
+
+    @Override
+    @Transactional
+    public void rollbackRegisterUserWithShopFailure(UserShopFailureEvent event) {
+        log.info("[ROLLBACK_REGISTER_USER_WITH_SHOP_FAILURE] - Deleting user for rollback action. Error: {}.", event);
+        userRepository.deleteById(event.getUserId());
     }
 }
