@@ -26,9 +26,9 @@ public class RegisterShopSuccessKafkaListener {
     }
 
     @KafkaListener(
-        topics = BaseKafkaConstants.Topic.CREATE_USER_SHOP_COMPLETION,
-        groupId = BaseKafkaConstants.GroupId.CREATE_USER_SHOP_COMPLETION,
-        concurrency = BaseKafkaConstants.Consumers.CREATE_USER_SHOP_COMPLETION
+        topics = BaseKafkaConstants.Topic.USER_REGISTER_SHOP_COMPLETION,
+        groupId = BaseKafkaConstants.GroupId.USER_REGISTER_SHOP_COMPLETION,
+        concurrency = BaseKafkaConstants.Consumers.USER_REGISTER_SHOP_COMPLETION
     )
     public void receiveMessage(
         @Payload String payload,
@@ -36,10 +36,10 @@ public class RegisterShopSuccessKafkaListener {
         @Header(KafkaHeaders.RECEIVED_PARTITION) int ignoredPartition,
         Acknowledgment ack
     ) {
-        log.info("[HANDLE_CREATE_USER_SHOP_COMPLETION] - message payload: {}", payload);
+        log.info("[HANDLE_USER_REGISTER_SHOP_COMPLETION_EVENT] - message payload: {}", payload);
 
         if (Objects.isNull(payload)) {
-            log.error("[HANDLE_REGISTER_USER_SHOP_COMPLETION_EVENT_FAILED] - message payload is null");
+            log.error("[HANDLE_USER_REGISTER_SHOP_COMPLETION_EVENT_FAILED] - message payload is null");
             ack.acknowledge();
             return;
         }
@@ -48,7 +48,7 @@ public class RegisterShopSuccessKafkaListener {
             UserShopCompletionEvent userShopCompletionEvent = JsonUtils.parseJson(payload, UserShopCompletionEvent.class);
 
             if (Objects.isNull(userShopCompletionEvent) || Objects.isNull(userShopCompletionEvent.getUserId())) {
-                log.error("[HANDLE_REGISTER_USER_SHOP_COMPLETION_EVENT_FAILED] - event content or userId is null");
+                log.error("[HANDLE_USER_REGISTER_SHOP_COMPLETION_EVENT_FAILED] - event content or userId is null");
                 ack.acknowledge();
                 return;
             }
@@ -56,7 +56,7 @@ public class RegisterShopSuccessKafkaListener {
             userService.updateRegisterUserWithShopCompletion(userShopCompletionEvent);
             ack.acknowledge();
         } catch (Exception e) {
-            log.error("[HANDLE_CREATE_USER_SHOP_COMPLETION_EXCEPTION] - error: {}. Retry later", e.getMessage(), e);
+            log.error("[HANDLE_USER_REGISTER_SHOP_COMPLETION_EXCEPTION] - error: {}. Retry later", e.getMessage(), e);
         }
     }
 }

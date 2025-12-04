@@ -26,9 +26,9 @@ public class RegisterShopFailureKafkaListener {
     }
 
     @KafkaListener(
-        topics = BaseKafkaConstants.Topic.CREATE_USER_SHOP_FAILURE,
-        groupId = BaseKafkaConstants.GroupId.CREATE_USER_SHOP_FAILURE,
-        concurrency = BaseKafkaConstants.Consumers.CREATE_USER_SHOP_FAILURE
+        topics = BaseKafkaConstants.Topic.USER_REGISTER_SHOP_FAILURE,
+        groupId = BaseKafkaConstants.GroupId.USER_REGISTER_SHOP_FAILURE,
+        concurrency = BaseKafkaConstants.Consumers.USER_REGISTER_SHOP_FAILURE
     )
     public void receiveMessage(
         @Payload String payload,
@@ -36,10 +36,10 @@ public class RegisterShopFailureKafkaListener {
         @Header(KafkaHeaders.RECEIVED_PARTITION) int ignoredPartition,
         Acknowledgment ack
     ) {
-        log.info("[HANDLE_CREATE_USER_SHOP_FAILURE_EVENT] - message payload: {}", payload);
+        log.info("[HANDLE_USER_REGISTER_SHOP_FAILURE_EVENT] - message payload: {}", payload);
 
         if (Objects.isNull(payload)) {
-            log.error("[HANDLE_ROLLBACK_CREATE_USER_WITH_SHOP_FAILED] - message payload is null");
+            log.error("[HANDLE_USER_REGISTER_SHOP_FAILURE_EVENT_FAILED] - message payload is null");
             ack.acknowledge();
             return;
         }
@@ -48,7 +48,7 @@ public class RegisterShopFailureKafkaListener {
             UserShopFailureEvent userShopFailureEvent = JsonUtils.parseJson(payload, UserShopFailureEvent.class);
 
             if (Objects.isNull(userShopFailureEvent) || Objects.isNull(userShopFailureEvent.getUserId())) {
-                log.error("[HANDLE_ROLLBACK_CREATE_USER_WITH_SHOP_FAILED] - event content or userId is null");
+                log.error("[HANDLE_USER_REGISTER_SHOP_FAILURE_EVENT_FAILED] - event content or userId is null");
                 ack.acknowledge();
                 return;
             }
@@ -56,7 +56,7 @@ public class RegisterShopFailureKafkaListener {
             userService.rollbackRegisterUserWithShopFailure(userShopFailureEvent);
             ack.acknowledge();
         } catch (Exception e) {
-            log.error("[HANDLE_ROLLBACK_CREATE_USER_WITH_SHOP_EXCEPTION] - error. {}. Retry later", e.getMessage(), e);
+            log.error("[HANDLE_USER_REGISTER_SHOP_FAILURE_EVENT_EXCEPTION] - error. {}. Retry later", e.getMessage(), e);
         }
     }
 }
