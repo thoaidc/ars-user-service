@@ -1,10 +1,10 @@
 package com.ars.userservice.service.impl;
 
-import com.ars.userservice.constants.OutBoxConstants;
 import com.ars.userservice.entity.OutBox;
 import com.ars.userservice.queue.publisher.KafkaProducer;
 import com.ars.userservice.repository.OutBoxRepository;
 import com.ars.userservice.service.OutBoxService;
+import com.dct.model.constants.BaseOutBoxConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +29,8 @@ public class OutBoxServiceImpl implements OutBoxService {
     @Transactional
     public void processOutBoxEvent() {
         List<OutBox> outBoxes = outBoxRepository.findTopOutBoxesByTypeAndStatus(
-            OutBoxConstants.Type.REGISTER_USER_WITH_SHOP,
-            OutBoxConstants.Status.PENDING
+            BaseOutBoxConstants.Type.USER_CREATED,
+            BaseOutBoxConstants.Status.PENDING
         );
 
         for (OutBox outBox : outBoxes) {
@@ -39,7 +39,7 @@ public class OutBoxServiceImpl implements OutBoxService {
                     outBox.getSagaId(), outBox.getType(), outBox.getValue()
                 );
                 kafkaProducer.sendMessageCreatedUser(outBox.getValue());
-                outBox.setStatus(OutBoxConstants.Status.COMPLETION);
+                outBox.setStatus(BaseOutBoxConstants.Status.COMPLETION);
             }
         }
 

@@ -1,6 +1,5 @@
 package com.ars.userservice.service.impl;
 
-import com.ars.userservice.constants.OutBoxConstants;
 import com.ars.userservice.constants.ResultConstants;
 import com.ars.userservice.constants.UserConstants;
 import com.ars.userservice.dto.mapping.IAuthenticationDTO;
@@ -29,6 +28,7 @@ import com.dct.model.constants.ActivateStatus;
 import com.dct.model.constants.BaseDatetimeConstants;
 import com.dct.model.constants.BaseExceptionConstants;
 import com.dct.model.constants.BaseHttpStatusConstants;
+import com.dct.model.constants.BaseOutBoxConstants;
 import com.dct.model.constants.BaseSecurityConstants;
 import com.dct.model.constants.BaseUserConstants;
 import com.dct.model.dto.auth.BaseTokenDTO;
@@ -155,8 +155,8 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         OutBox outBox = new OutBox();
         outBox.setSagaId(userCreatedEvent.getSagaId());
-        outBox.setStatus(OutBoxConstants.Status.PENDING);
-        outBox.setType(OutBoxConstants.Type.REGISTER_USER_WITH_SHOP);
+        outBox.setStatus(BaseOutBoxConstants.Status.PENDING);
+        outBox.setType(BaseOutBoxConstants.Type.USER_CREATED);
         outBox.setValue(JsonUtils.toJsonString(userCreatedEvent));
         outBoxRepository.save(outBox);
         return BaseResponseDTO.builder()

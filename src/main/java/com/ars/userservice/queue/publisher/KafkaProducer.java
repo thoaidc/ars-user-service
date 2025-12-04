@@ -21,6 +21,6 @@ public class KafkaProducer {
 
     public void sendMessageCreatedUser(String event) {
         log.info("[SEND_CREATED_USER_TOPIC] - {}", event);
-        kafkaTemplate.send(kafkaProperties.getTopics().getRegisterShop(), event);
+        kafkaTemplate.send(kafkaProperties.getTopics().getUserCreated(), event);
     }
 }
