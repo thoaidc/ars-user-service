@@ -4,10 +4,12 @@ import com.ars.userservice.constants.OutBoxConstants;
 import com.ars.userservice.constants.ResultConstants;
 import com.ars.userservice.constants.UserConstants;
 import com.ars.userservice.dto.mapping.IAuthenticationDTO;
+import com.ars.userservice.dto.request.user.AuthTokenDTO;
 import com.ars.userservice.dto.request.user.LoginRequestDTO;
 import com.ars.userservice.dto.request.user.RegisterRequestDTO;
 import com.ars.userservice.dto.request.user.RegisterShopRequestDTO;
 import com.ars.userservice.dto.response.AuthenticationResponseDTO;
+import com.ars.userservice.dto.response.ShopLoginInfoDTO;
 import com.ars.userservice.entity.OutBox;
 import com.ars.userservice.entity.Roles;
 import com.ars.userservice.entity.Users;
@@ -18,6 +20,7 @@ import com.ars.userservice.repository.UserRepository;
 import com.ars.userservice.security.UserDetailsCustom;
 import com.ars.userservice.service.AuthService;
 
+import com.dct.config.common.HttpClientUtils;
 import com.dct.config.security.filter.BaseJwtProvider;
 import com.dct.model.common.JsonUtils;
 import com.dct.model.common.SecurityUtils;
@@ -36,6 +39,7 @@ import com.dct.model.exception.BaseAuthenticationException;
 import com.dct.model.exception.BaseBadRequestException;
 import com.dct.model.exception.BaseIllegalArgumentException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -43,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -58,8 +63,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -77,6 +84,8 @@ public class AuthServiceImpl implements AuthService {
     private final AuthorityRepository authorityRepository;
     private final OutBoxRepository outBoxRepository;
     private final SecurityProps securityProps;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            BaseJwtProvider tokenProvider,
@@ -85,7 +94,9 @@ public class AuthServiceImpl implements AuthService {
                            RoleRepository roleRepository,
                            AuthorityRepository authorityRepository,
                            OutBoxRepository outBoxRepository,
-                           SecurityProps securityProps) {
+                           SecurityProps securityProps,
+                           RestTemplate restTemplate,
+                           ObjectMapper objectMapper) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
@@ -94,6 +105,8 @@ public class AuthServiceImpl implements AuthService {
         this.authorityRepository = authorityRepository;
         this.outBoxRepository = outBoxRepository;
         this.securityProps = securityProps;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -255,12 +268,25 @@ public class AuthServiceImpl implements AuthService {
         BeanUtils.copyProperties(user, results);
         results.setAuthorities(authorities);
         results.setStatus(BaseUserConstants.Status.toString(user.getStatus()));
-        BaseTokenDTO tokenDTO = BaseTokenDTO.builder()
+        AuthTokenDTO.TokenBuilder authTokenDTOBuilder = AuthTokenDTO.tokenBuilder()
                 .userId(user.getId())
                 .username(user.getUsername())
                 .authorities(authorities)
-                .rememberMe(isRememberMe)
-                .build();
+                .rememberMe(isRememberMe);
+
+        if (UserConstants.Type.SHOP.equals(user.getType())) {
+            BaseResponseDTO responseDTO = HttpClientUtils.builder()
+                    .restTemplate(restTemplate)
+                    .url("http://PRODUCT-SERVICE/api/internal/shop/login-info/" + user.getId())
+                    .method(HttpMethod.GET)
+                    .execute(BaseResponseDTO.class);
+            if (Objects.nonNull(responseDTO) && Objects.nonNull(responseDTO.getResult())) {
+                ShopLoginInfoDTO shopLoginInfo = objectMapper.convertValue(responseDTO.getResult(), ShopLoginInfoDTO.class);
+                authTokenDTOBuilder.shopId(shopLoginInfo.getShopId()).shopName(shopLoginInfo.getShopName());
+            }
+        }
+
+        AuthTokenDTO tokenDTO = authTokenDTOBuilder.build();
         String jwtAccessToken = tokenProvider.generateAccessToken(tokenDTO);
         String jwtRefreshToken = tokenProvider.generateRefreshToken(tokenDTO);
         results.setAccessToken(jwtAccessToken);
