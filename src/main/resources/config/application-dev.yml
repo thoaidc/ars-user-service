@@ -105,9 +105,9 @@ spring:
       enable-auto-commit: false
       group-id: default-group
     topics:
-      create-user-shop-completion: create-user-shop-completion
-      create-user-shop-failure: create-user-shop-failure
-      register-shop: register-shop
+      user-created: user-created
+      user-register-shop-completion: user-register-shop-completion
+      user-register-shop-failure: user-register-shop-failure
 
 server:
   servlet:
