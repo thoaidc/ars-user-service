@@ -277,7 +277,7 @@ public class AuthServiceImpl implements AuthService {
         if (UserConstants.Type.SHOP.equals(user.getType())) {
             BaseResponseDTO responseDTO = HttpClientUtils.builder()
                     .restTemplate(restTemplate)
-                    .url("http://PRODUCT-SERVICE/api/internal/shops/login-info/" + user.getId())
+                    .url("http://localhost:8002/api/internal/shops/login-info/" + user.getId())
                     .method(HttpMethod.GET)
                     .execute(BaseResponseDTO.class);
             if (Objects.nonNull(responseDTO) && Objects.nonNull(responseDTO.getResult())) {
