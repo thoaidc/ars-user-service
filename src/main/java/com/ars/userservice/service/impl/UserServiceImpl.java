@@ -41,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -90,6 +91,11 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user, userDTO);
         userDTO.setRoles(roleService.getUserRoles(userId));
         return BaseResponseDTO.builder().ok(userDTO);
+    }
+
+    @Override
+    public BaseResponseDTO getShopOwnerInfos(Set<Integer> ownerIds) {
+        return BaseResponseDTO.builder().ok(userRepository.getShopOwnerInfos(ownerIds));
     }
 
     @Override

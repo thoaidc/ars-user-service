@@ -12,9 +12,12 @@ import com.dct.model.dto.response.BaseResponseDTO;
 import com.dct.model.event.UserShopCompletionEvent;
 import com.dct.model.event.UserShopFailureEvent;
 
+import java.util.Set;
+
 public interface UserService {
     BaseResponseDTO getUsersWithPaging(BaseRequestDTO request);
     BaseResponseDTO getUserDetail(Integer userId);
+    BaseResponseDTO getShopOwnerInfos(Set<Integer> ownerIds);
     BaseResponseDTO createUser(CreateUserRequestDTO requestDTO);
     BaseResponseDTO updateUser(UpdateUserRequestDTO requestDTO);
     BaseResponseDTO createOrUpdateUser(OAuth2UserDTO userDTO);

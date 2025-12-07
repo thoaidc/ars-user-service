@@ -124,6 +124,8 @@ app:
       - /
     external-service-public-request-patterns:
       - /api/internal/**
+      - /api/p/**
+      - /
     jwt:
       access-token:
         base64-secret-key: ${ARS_ACCESS_TOKEN_KEY}

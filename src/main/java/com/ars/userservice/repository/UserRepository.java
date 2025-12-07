@@ -2,6 +2,7 @@ package com.ars.userservice.repository;
 
 import com.ars.userservice.dto.mapping.IAuthenticationDTO;
 import com.ars.userservice.dto.mapping.IUserDTO;
+import com.ars.userservice.dto.mapping.ShopOwnerInfo;
 import com.ars.userservice.entity.Users;
 import com.dct.model.constants.BaseUserConstants;
 
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -72,4 +74,13 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
     @Query(value = "UPDATE ars_user.users a SET a.status = ?2 WHERE a.id = ?1", nativeQuery = true)
     void updateUserStatusById(Integer userId, byte status);
     Optional<Users> findByEmail(String email);
+
+    @Query(
+        value = """
+            SELECT u.id as ownerId, u.fullname as ownerName, u.email as ownerEmail, u.phone as ownerPhone
+            FROM ars_user.users u WHERE u.id IN (:ownerIds)
+            """,
+        nativeQuery = true
+    )
+    List<ShopOwnerInfo> getShopOwnerInfos(@Param("ownerIds") Iterable<Integer> ownerIds);
 }

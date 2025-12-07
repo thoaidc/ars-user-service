@@ -151,7 +151,9 @@ app:
       - /api/internal/**
       - /
     external-service-public-request-patterns:
+      - /api/p/**
       - /api/internal/**
+      - /
     jwt:
       access-token:
         base64-secret-key: ZGN0LWJhc2Utc2VjcmV0LWtleS1mb3ItYWNjZXNzLXRva2VuLXZhbGlkYXRpb24=
