@@ -115,6 +115,7 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(requestDTO, user);
         user.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
         user.setStatus(BaseUserConstants.Status.ACTIVE);
+        user.setType(UserConstants.Type.ADMIN);
         userRepository.save(user);
         int userId = user.getId();
         List<UserRole> userRoles = roles.stream().map(role -> new UserRole(userId, role.getId())).toList();
@@ -167,8 +168,7 @@ public class UserServiceImpl implements UserService {
                     .email(userDTO.getEmail())
                     .status(BaseUserConstants.Status.ACTIVE)
                     .password(passwordEncoder.encode(rawPassword))
-                    .isAdmin(Boolean.FALSE)
-                    .type("USER")
+                    .type(UserConstants.Type.USER)
                     .build();
             userRepository.save(newUser);
             return BaseResponseDTO.builder().ok(newUser);

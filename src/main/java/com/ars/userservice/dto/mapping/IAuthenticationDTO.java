@@ -11,7 +11,6 @@ public interface IAuthenticationDTO {
     String getEmail();
     String getPhone();
     String getType();
-    boolean getIsAdmin();
     byte getStatus();
     String getCreatedBy();
     String getLastModifiedBy();

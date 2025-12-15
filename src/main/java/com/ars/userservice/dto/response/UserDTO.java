@@ -15,7 +15,7 @@ public class UserDTO extends AuditingDTO {
     private String phone;
     private String address;
     private String status;
-    private boolean isAdmin;
+    private String type;
     private List<IRoleDTO> roles = new ArrayList<>();
 
     public String getFullname() {
@@ -50,12 +50,16 @@ public class UserDTO extends AuditingDTO {
         this.status = BaseUserConstants.Status.toString(status);
     }
 
-    public boolean getIsAdmin() {
-        return isAdmin;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getAddress() {

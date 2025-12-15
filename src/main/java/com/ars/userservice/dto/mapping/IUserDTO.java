@@ -7,7 +7,6 @@ public interface IUserDTO {
     String getFullname();
     String getEmail();
     String getPhone();
-    boolean getIsAdmin();
     byte getStatus();
     String getCreatedBy();
     String getCreatedDate();

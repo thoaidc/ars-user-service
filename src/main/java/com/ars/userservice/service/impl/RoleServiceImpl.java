@@ -13,7 +13,6 @@ import com.ars.userservice.repository.RoleAuthorityRepository;
 import com.ars.userservice.repository.RoleRepository;
 import com.ars.userservice.service.RoleService;
 
-import com.dct.model.common.BaseCommon;
 import com.dct.model.common.MessageTranslationUtils;
 import com.dct.model.constants.BaseExceptionConstants;
 import com.dct.model.dto.auth.AuthorityTreeNode;
@@ -127,7 +126,6 @@ public class RoleServiceImpl implements RoleService {
         Roles role = Roles.builder()
                 .name(request.getName())
                 .code(request.getCode())
-                .normalizedName(BaseCommon.normalizeName(request.getName()))
                 .build();
         roleRepository.save(role);
         List<IAuthorityDTO> authorityDTOS = authorityRepository.findAllByIds(request.getAuthorityIds());

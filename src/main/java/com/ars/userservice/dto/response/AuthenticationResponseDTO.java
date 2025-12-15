@@ -15,7 +15,6 @@ public class AuthenticationResponseDTO extends AuditingDTO {
     private String address;
     private String username;
     private String type;
-    private boolean isAdmin;
     private String status;
     private String accessToken;
     @JsonIgnore
@@ -84,14 +83,6 @@ public class AuthenticationResponseDTO extends AuditingDTO {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public boolean getIsAdmin() {
-        return isAdmin;
-    }
-
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
     }
 
     public String getPhone() {

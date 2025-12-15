@@ -30,9 +30,6 @@ public class Users extends AbstractAuditingEntity {
     @Column(name = "fullname", nullable = false, length = 100, columnDefinition = "NVARCHAR(100)")
     private String fullname;
 
-    @Column(name = "normalized_name", length = 50)
-    private String normalizedName;
-
     @Column(name = "email", length = 100, unique = true)
     private String email;
 
@@ -50,13 +47,6 @@ public class Users extends AbstractAuditingEntity {
      */
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
     private byte status = BaseUserConstants.Status.ACTIVE;
-
-    /**
-     * 1 = admin <p>
-     * 0 = user
-     */
-    @Column(name = "is_admin", nullable = false, columnDefinition = "TINYINT(1) DEFAULT FALSE")
-    private boolean isAdmin = false;
 
     @ManyToMany(
         cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH },
@@ -93,14 +83,6 @@ public class Users extends AbstractAuditingEntity {
         this.fullname = fullname;
     }
 
-    public String getNormalizedName() {
-        return normalizedName;
-    }
-
-    public void setNormalizedName(String normalizedName) {
-        this.normalizedName = normalizedName;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -125,14 +107,6 @@ public class Users extends AbstractAuditingEntity {
         this.status = status;
     }
 
-    public boolean getIsAdmin() {
-        return isAdmin;
-    }
-
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
-
     public String getType() {
         return type;
     }
@@ -153,12 +127,10 @@ public class Users extends AbstractAuditingEntity {
         private String username;
         private String password;
         private String fullname;
-        private String normalizedName;
         private String email;
         private String phone;
         private String type;
         private byte status = BaseUserConstants.Status.ACTIVE;
-        private boolean isAdmin = false;
         private List<Roles> roles = new ArrayList<>();
 
         public Builder username(String username) {
@@ -173,11 +145,6 @@ public class Users extends AbstractAuditingEntity {
 
         public Builder fullname(String fullname) {
             this.fullname = fullname;
-            return this;
-        }
-
-        public Builder normalizedName(String normalizedName) {
-            this.normalizedName = normalizedName;
             return this;
         }
 
@@ -201,11 +168,6 @@ public class Users extends AbstractAuditingEntity {
             return this;
         }
 
-        public Builder isAdmin(boolean isAdmin) {
-            this.isAdmin = isAdmin;
-            return this;
-        }
-
         public Builder roles(List<Roles> roles) {
             this.roles = roles;
             return this;
@@ -216,11 +178,9 @@ public class Users extends AbstractAuditingEntity {
             user.setUsername(this.username);
             user.setPassword(this.password);
             user.setFullname(this.fullname);
-            user.setNormalizedName(this.normalizedName);
             user.setEmail(this.email);
             user.setPhone(this.phone);
             user.setStatus(this.status);
-            user.setIsAdmin(this.isAdmin);
             user.setType(this.type);
             user.setRoles(this.roles);
             return user;

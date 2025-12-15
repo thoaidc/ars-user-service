@@ -49,7 +49,9 @@ public class CreateUserRequestDTO {
 
     private String phone;
     private String address;
-    private boolean isAdmin;
+
+    @NotBlank
+    private String type;
 
     @Size(min = 1, message = BaseExceptionConstants.ROLE_AUTHORITIES_NOT_EMPTY)
     private List<Integer> roleIds = new ArrayList<>();
@@ -102,12 +104,12 @@ public class CreateUserRequestDTO {
         this.address = address;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public String getType() {
+        return type;
     }
 
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public List<Integer> getRoleIds() {

@@ -21,7 +21,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<Users, Integer> {
     @Query(
         value = """
-            SELECT u.id, u.username, u.fullname, u.email, u.status, u.phone, u.is_admin AS isAdmin,
+            SELECT u.id, u.username, u.fullname, u.email, u.status, u.phone, u.type,
                    u.created_by AS createdBy, u.created_date AS createdDate,
                    u.last_modified_by AS lastModifiedBy, u.last_modified_date AS lastModifiedDate
             FROM ars_user.users u
@@ -30,7 +30,7 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
                 AND (:toDate IS NULL OR u.created_date <= :toDate)
                 AND (:status IS NULL OR u.status = :status)
                 AND (:keyword IS NULL OR
-                    (u.username LIKE :keyword OR u.normalized_name LIKE :keyword OR u.email LIKE :keyword)
+                    (u.username LIKE :keyword OR u.email LIKE :keyword)
                 )
             ORDER BY u.created_date DESC
         """,
@@ -53,7 +53,6 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
                    u.email,
                    u.phone,
                    u.type,
-                   u.is_admin isAdmin,
                    u.status,
                    u.created_by as createdBy,
                    u.last_modified_by as lastModifiedBy,

@@ -25,10 +25,6 @@ public class Roles extends AbstractAuditingEntity {
     @Column(name = "code", nullable = false, unique = true, length = 50)
     private String code;
 
-    @Column(name = "normalized_name", nullable = false, length = 50)
-    @JsonIgnore
-    private String normalizedName;
-
     @ManyToMany(
         cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH },
         fetch = FetchType.LAZY
@@ -57,14 +53,6 @@ public class Roles extends AbstractAuditingEntity {
         this.code = code;
     }
 
-    public String getNormalizedName() {
-        return normalizedName;
-    }
-
-    public void setNormalizedName(String normalizedName) {
-        this.normalizedName = normalizedName;
-    }
-
     public List<Authority> getAuthorities() {
         return authorities;
     }
@@ -76,7 +64,6 @@ public class Roles extends AbstractAuditingEntity {
     public static class Builder {
         private String name;
         private String code;
-        private String normalizedName;
         private List<Authority> authorities;
 
         public Builder name(String name) {
@@ -89,11 +76,6 @@ public class Roles extends AbstractAuditingEntity {
             return this;
         }
 
-        public Builder normalizedName(String normalizedName) {
-            this.normalizedName = normalizedName;
-            return this;
-        }
-
         public Builder authorities(List<Authority> authorities) {
             this.authorities = authorities;
             return this;
@@ -103,7 +85,6 @@ public class Roles extends AbstractAuditingEntity {
             Roles role = new Roles();
             role.setName(this.name);
             role.setCode(this.code);
-            role.setNormalizedName(this.normalizedName);
             role.setAuthorities(this.authorities);
             return role;
         }
