@@ -82,4 +82,13 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
         nativeQuery = true
     )
     List<ShopOwnerInfo> getShopOwnerInfos(@Param("ownerIds") Iterable<Integer> ownerIds);
+
+    @Query(
+        value = """
+            SELECT u.id as ownerId, u.fullname as ownerName, u.email as ownerEmail, u.phone as ownerPhone
+            FROM ars_user.users u WHERE u.id = ?
+        """,
+        nativeQuery = true
+    )
+    Optional<ShopOwnerInfo> getShopOwnerInfoByOwnerId(Integer ownerId);
 }

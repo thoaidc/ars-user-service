@@ -4,6 +4,7 @@ import com.ars.userservice.constants.UserConstants;
 import com.ars.userservice.dto.mapping.IRoleDTO;
 import com.ars.userservice.dto.mapping.IUserDTO;
 import com.ars.userservice.dto.mapping.OAuth2UserDTO;
+import com.ars.userservice.dto.mapping.ShopOwnerInfo;
 import com.ars.userservice.dto.request.user.ChangeEmailRequestDTO;
 import com.ars.userservice.dto.request.user.ChangePasswordRequestDTO;
 import com.ars.userservice.dto.request.user.ChangeUserStatusRequestDTO;
@@ -96,6 +97,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResponseDTO getShopOwnerInfos(Set<Integer> ownerIds) {
         return BaseResponseDTO.builder().ok(userRepository.getShopOwnerInfos(ownerIds));
+    }
+
+    @Override
+    public BaseResponseDTO getShopOwnerInfos(Integer ownerId) {
+        ShopOwnerInfo shopOwnerInfo = userRepository.getShopOwnerInfoByOwnerId(ownerId).orElse(null);
+        return BaseResponseDTO.builder().ok(shopOwnerInfo);
     }
 
     @Override

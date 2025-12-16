@@ -18,6 +18,7 @@ public interface UserService {
     BaseResponseDTO getUsersWithPaging(BaseRequestDTO request);
     BaseResponseDTO getUserDetail(Integer userId);
     BaseResponseDTO getShopOwnerInfos(Set<Integer> ownerIds);
+    BaseResponseDTO getShopOwnerInfos(Integer ownerId);
     BaseResponseDTO createUser(CreateUserRequestDTO requestDTO);
     BaseResponseDTO updateUser(UpdateUserRequestDTO requestDTO);
     BaseResponseDTO createOrUpdateUser(OAuth2UserDTO userDTO);
