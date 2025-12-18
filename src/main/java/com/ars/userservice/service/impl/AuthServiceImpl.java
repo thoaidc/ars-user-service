@@ -31,7 +31,6 @@ import com.dct.model.constants.BaseHttpStatusConstants;
 import com.dct.model.constants.BaseOutBoxConstants;
 import com.dct.model.constants.BaseSecurityConstants;
 import com.dct.model.constants.BaseUserConstants;
-import com.dct.model.dto.auth.BaseTokenDTO;
 import com.dct.model.dto.auth.BaseUserDTO;
 import com.dct.model.dto.response.BaseResponseDTO;
 import com.dct.model.event.UserCreatedEvent;
@@ -239,8 +238,10 @@ public class AuthServiceImpl implements AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .filter(org.springframework.util.StringUtils::hasText)
                 .collect(Collectors.toSet());
-        BaseTokenDTO tokenDTO = BaseTokenDTO.builder()
+        AuthTokenDTO tokenDTO = AuthTokenDTO.tokenBuilder()
                 .authorities(authorities)
+                .shopId(userDTO.getShopId())
+                .shopName(userDTO.getShopName())
                 .userId(userDTO.getId())
                 .username(userDTO.getUsername())
                 .build();
