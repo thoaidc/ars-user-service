@@ -124,6 +124,20 @@ public class AuthServiceImpl implements AuthService {
             BeanUtils.copyProperties(authentication.get(), authenticationDTO);
             Set<String> authorities = authorityRepository.findAllByUserId(authenticationDTO.getId());
             authenticationDTO.setAuthorities(authorities);
+
+            if (UserConstants.Type.SHOP.equals(authenticationDTO.getType())) {
+                BaseResponseDTO responseDTO = HttpClientUtils.builder()
+                        .restTemplate(restTemplate)
+                        .url("http://localhost:8002/api/internal/shops/login-info/" + authenticationDTO.getId())
+                        .method(HttpMethod.GET)
+                        .execute(BaseResponseDTO.class);
+                if (Objects.nonNull(responseDTO) && Objects.nonNull(responseDTO.getResult())) {
+                    ShopLoginInfoDTO shopLoginInfo = objectMapper.convertValue(responseDTO.getResult(), ShopLoginInfoDTO.class);
+                    authenticationDTO.setShopId(shopLoginInfo.getShopId());
+                    authenticationDTO.setShopName(shopLoginInfo.getShopName());
+                }
+            }
+
             return BaseResponseDTO.builder().ok(authenticationDTO);
         }
 
@@ -283,6 +297,8 @@ public class AuthServiceImpl implements AuthService {
             if (Objects.nonNull(responseDTO) && Objects.nonNull(responseDTO.getResult())) {
                 ShopLoginInfoDTO shopLoginInfo = objectMapper.convertValue(responseDTO.getResult(), ShopLoginInfoDTO.class);
                 authTokenDTOBuilder.shopId(shopLoginInfo.getShopId()).shopName(shopLoginInfo.getShopName());
+                results.setShopId(shopLoginInfo.getShopId());
+                results.setShopName(shopLoginInfo.getShopName());
             }
         }
 

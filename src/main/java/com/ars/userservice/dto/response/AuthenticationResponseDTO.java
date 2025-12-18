@@ -9,10 +9,11 @@ import java.util.Set;
 
 @SuppressWarnings("unused")
 public class AuthenticationResponseDTO extends AuditingDTO {
+    private Integer shopId;
+    private String shopName;
     private String fullname;
     private String email;
     private String phone;
-    private String address;
     private String username;
     private String type;
     private String status;
@@ -93,11 +94,19 @@ public class AuthenticationResponseDTO extends AuditingDTO {
         this.phone = phone;
     }
 
-    public String getAddress() {
-        return address;
+    public Integer getShopId() {
+        return shopId;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 }
