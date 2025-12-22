@@ -32,6 +32,11 @@ INSERT INTO roles (
     CURRENT_TIMESTAMP
 );
 
+-- ADMIN
+INSERT INTO `authority` (`name`, `code`, `description`, `parent_id`, `parent_code`, `created_by`, `last_modified_by`)
+VALUES ('authority.admin', '00', 'authority.admin.description', NULL, NULL, 'admin', 'admin');
+
+
 -- Manage System
 INSERT INTO `authority` (`name`, `code`, `description`, `parent_id`, `parent_code`, `created_by`, `last_modified_by`)
 VALUES ('authority.system', '01', 'authority.system.description', NULL, NULL, 'admin', 'admin');
@@ -115,6 +120,6 @@ SELECT
     'system' AS last_modified_by,
     CURRENT_TIMESTAMP AS last_modified_date
 FROM roles r CROSS JOIN authority a
-WHERE r.code = 'ROLE_DEFAULT' AND a.code NOT IN ('01', '0101', '0102');
+WHERE r.code = 'ROLE_DEFAULT' AND a.code NOT IN ('00', '01', '0101', '0102');
 
 COMMIT;
