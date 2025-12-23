@@ -13,6 +13,7 @@ public class OutBox extends AbstractAuditingEntity {
     private String type;
     private String value;
     private String status;
+    private String error;
 
     public String getSagaId() {
         return sagaId;
@@ -44,5 +45,13 @@ public class OutBox extends AbstractAuditingEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }
