@@ -24,7 +24,7 @@ INSERT INTO roles (
 ),
 (
     'Shop owner',
-    'ROLE_DEFAULT',
+    'SHOP_OWNER',
     'shop_owner',
     'system',
     CURRENT_TIMESTAMP,
@@ -98,12 +98,12 @@ COMMIT;
 
 
 START TRANSACTION;
--- Delete all old rights of ROLE_DEFAULT
+-- Delete all old rights of SHOP_OWNER
 DELETE ra
 FROM role_authority ra JOIN roles r ON ra.role_id = r.id
-WHERE r.code = 'ROLE_DEFAULT';
+WHERE r.code = 'SHOP_OWNER';
 
--- Re-add all permissions to ROLE_DEFAULT
+-- Re-add all permissions to SHOP_OWNER
 INSERT INTO role_authority (
     role_id,
     authority_id,
@@ -120,6 +120,6 @@ SELECT
     'system' AS last_modified_by,
     CURRENT_TIMESTAMP AS last_modified_date
 FROM roles r CROSS JOIN authority a
-WHERE r.code = 'ROLE_DEFAULT' AND a.code NOT IN ('00', '01', '0101', '0102');
+WHERE r.code = 'SHOP_OWNER' AND a.code NOT IN ('00', '01', '0101', '0102');
 
 COMMIT;
