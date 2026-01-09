@@ -1,5 +1,6 @@
 package com.ars.userservice.resources;
 
+import com.ars.userservice.dto.UserIDRequest;
 import com.ars.userservice.dto.request.user.SearchShopInfoRequestDTO;
 import com.ars.userservice.service.UserService;
 import com.dct.model.dto.response.BaseResponseDTO;
@@ -7,6 +8,8 @@ import com.dct.model.dto.response.BaseResponseDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +30,10 @@ public class ShopOwnerResource {
     @GetMapping("/owners-info/{ownerId}")
     public BaseResponseDTO getShopsOwnerInfo(@PathVariable Integer ownerId) {
         return userService.getShopOwnerInfos(ownerId);
+    }
+
+    @PostMapping("/by-ids")
+    public BaseResponseDTO getByIds(@RequestBody UserIDRequest request) {
+        return userService.getUserByIds(request);
     }
 }

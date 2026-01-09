@@ -1,6 +1,7 @@
 package com.ars.userservice.service.impl;
 
 import com.ars.userservice.constants.UserConstants;
+import com.ars.userservice.dto.UserIDRequest;
 import com.ars.userservice.dto.mapping.IRoleDTO;
 import com.ars.userservice.dto.mapping.IUserDTO;
 import com.ars.userservice.dto.mapping.OAuth2UserDTO;
@@ -239,6 +240,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public BaseResponseDTO recoverPassword(RecoverPasswordRequestDTO requestDTO) {
         return null;
+    }
+
+    @Override
+    public BaseResponseDTO getUserByIds(UserIDRequest request) {
+        return BaseResponseDTO.builder().ok(userRepository.findUserDTOByIds(request.getIds()));
     }
 
     @Override

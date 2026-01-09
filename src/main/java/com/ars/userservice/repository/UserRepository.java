@@ -3,6 +3,7 @@ package com.ars.userservice.repository;
 import com.ars.userservice.dto.mapping.IAuthenticationDTO;
 import com.ars.userservice.dto.mapping.IUserDTO;
 import com.ars.userservice.dto.mapping.ShopOwnerInfo;
+import com.ars.userservice.dto.mapping.UserDTOMapping;
 import com.ars.userservice.entity.Users;
 import com.dct.model.constants.BaseUserConstants;
 
@@ -91,4 +92,7 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
         nativeQuery = true
     )
     Optional<ShopOwnerInfo> getShopOwnerInfoByOwnerId(Integer ownerId);
+
+    @Query(value = "select id, fullname as name from users where id in ?", nativeQuery = true)
+    List<UserDTOMapping> findUserDTOByIds(Iterable<Integer> ids);
 }

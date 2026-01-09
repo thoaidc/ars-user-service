@@ -1,5 +1,6 @@
 package com.ars.userservice.service;
 
+import com.ars.userservice.dto.UserIDRequest;
 import com.ars.userservice.dto.mapping.OAuth2UserDTO;
 import com.ars.userservice.dto.request.user.ChangeEmailRequestDTO;
 import com.ars.userservice.dto.request.user.ChangePasswordRequestDTO;
@@ -27,6 +28,7 @@ public interface UserService {
     BaseResponseDTO changeStatus(ChangeUserStatusRequestDTO requestDTO);
     BaseResponseDTO changePassword(ChangePasswordRequestDTO requestDTO);
     BaseResponseDTO recoverPassword(RecoverPasswordRequestDTO requestDTO);
+    BaseResponseDTO getUserByIds(UserIDRequest request);
     void updateRegisterUserWithShopCompletion(UserShopCompletionEvent event);
     void rollbackRegisterUserWithShopFailure(UserShopFailureEvent event);
 }
